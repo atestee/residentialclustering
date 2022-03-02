@@ -5,10 +5,8 @@ import L from "leaflet";
 import "leaflet-draw";
 
 export class CenterPicker extends Component {
-    map = null;
-
     componentDidMount() {
-        this.map = L.map('mapForChoosingCenter', {
+        let map = L.map('mapForChoosingCenter', {
             center: [50.07501157760184, 14.416865286199549],
             zoom: 13,
             layers: [
@@ -21,9 +19,44 @@ export class CenterPicker extends Component {
                 }),
             ],
             preferCanvas: true,
-            drawControl: true
         })
 
+        let drawnItems = new L.FeatureGroup();
+
+        let drawControl = new L.Control.Draw({
+            draw : {
+                polyline: false,
+                rectangle: false,
+                circle: false,
+                circlemarker: false,
+                marker: false
+                // polygon: { polygon draw options here }
+            }
+        });
+
+        let editControl = new L.Control.Draw({
+            draw: false,
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+
+        map.addControl(editControl);
+        map.addControl(drawControl);
+        map.addLayer(drawnItems);
+
+        // when polygon drawn we remove the control button for drawing polygons,
+        // because only one polygon is expected
+        map.on('draw:created', function(e) {
+            drawnItems.addLayer(e.layer);
+            console.log(drawnItems.getLayers()[0].toGeoJSON()); // polygon data
+            map.removeControl(drawControl);
+        });
+
+        // when polygon remove we add the control button for drawing polygons
+        map.on('draw:deleted', function() {
+            map.addControl(drawControl);
+        });
     }
 
     render() {
