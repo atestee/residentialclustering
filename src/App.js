@@ -8,6 +8,7 @@ import {JobManagerPicker} from "./components/JobManagerPicker";
 import {CityPicker} from "./components/CityPicker";
 import {RoutePicker} from "./components/RoutePicker";
 import {CenterPicker} from "./components/CenterPicker";
+import {ParametersFormPage} from "./components/ParametersFormPage";
 
 
 // delete L.Icon.Default.prototype._getIconUrl;
@@ -29,6 +30,7 @@ export class App extends Component {
                         <Route path="/new-job/1" element={<CityPicker />}/>
                         <Route path="/new-job/2" element={<RoutePicker />}/>
                         <Route path="/new-job/3" element={<CenterPicker />}/>
+                        <Route path="/new-job/4" element={<ParametersFormPage />}/>
                         <Route path="/job-management" element={<JobManagerPicker />}/>
                     </Routes>
                 </div>

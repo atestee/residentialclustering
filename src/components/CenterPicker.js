@@ -30,7 +30,6 @@ export class CenterPicker extends Component {
                 circle: false,
                 circlemarker: false,
                 marker: false
-                // polygon: { polygon draw options here }
             }
         });
 
@@ -65,7 +64,7 @@ export class CenterPicker extends Component {
                 <h2 className="header">Choose the excluded center</h2>
                 <div className="buttons">
                     <Button className="buttonBack" variant="outlined" href={"/new-job/2"}>Back</Button>
-                    <Button variant="outlined">Next</Button>
+                    <Button variant="outlined" href={"/new-job/4"}>Next</Button>
                 </div>
                 <div className="inputDiv">
                     <div id={"mapForChoosingCenter"}></div>
