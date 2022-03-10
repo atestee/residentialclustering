@@ -1,0 +1,18 @@
+.header-component {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-component_header {
+    margin-left: 16px;
+}
+
+.header-component_buttons {
+    margin-right: 16px;
+}
+
+.header-component_buttons_back-button {
+    margin-right: 10px !important;
+}

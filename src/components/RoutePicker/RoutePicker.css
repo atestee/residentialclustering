@@ -1,0 +1,53 @@
+.route-picker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.route-picker_dropdown-div {
+    margin-left: 16px;
+    flex-basis: 30%;
+}
+
+.route-picker_map-div {
+    flex-basis: 60%;
+}
+
+.route-picker_accordion {
+    margin-top: 16px;
+    background-color: lightgray !important;
+
+}
+
+.route-picker_accordion_accordionName {
+    text-transform: capitalize;
+}
+
+.route-picker_accordion_accordionDetails {
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: lightgray;
+    padding-bottom: 30px;
+    padding-left: 20px;
+}
+
+.route-picker_accordion_expanded {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.route-picker_accordion_expanded_checkboxes {
+    flex-basis: 30%;
+}
+
+.route-picker_accordion_map-div {
+    flex-basis: 60%;
+}
+
+#map {
+    height: 85vh;
+    width: 50vw;
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+}

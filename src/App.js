@@ -4,11 +4,11 @@ import {
     Routes,
     Route,
 } from "react-router-dom";
-import {JobManagerPicker} from "./components/JobManagerPicker";
-import {CityPicker} from "./components/CityPicker";
-import {RoutePicker} from "./components/RoutePicker";
-import {CenterPicker} from "./components/CenterPicker";
-import {ParametersFormPage} from "./components/ParametersFormPage";
+import {JobManagerPicker} from "./components/JobManagement/JobManagerPicker";
+import {CityPicker} from "./components/CityPicker/CityPicker";
+import {RoutePicker} from "./components/RoutePicker/RoutePicker";
+import {CenterPicker} from "./components/CenterPicker/CenterPicker";
+import {ParametersFormPage} from "./components/ParametersFormPage/ParametersFormPage";
 
 
 // delete L.Icon.Default.prototype._getIconUrl;

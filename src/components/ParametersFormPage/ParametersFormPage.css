@@ -1,0 +1,22 @@
+.parameters-form-page__form {
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.parameters-form-page__form-control {
+    margin-left: 16px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.parameters-form-page__label {
+    flex-basis: 70%;
+}
+
+.parameters-form-page__text-field {
+    flex-basis: 30%;
+}
