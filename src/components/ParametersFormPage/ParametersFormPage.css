@@ -14,9 +14,9 @@
 }
 
 .parameters-form-page__label {
-    flex-basis: 70%;
+    flex-basis: 60%;
 }
 
 .parameters-form-page__text-field {
-    flex-basis: 30%;
+    flex-basis: 40%;
 }

@@ -7,14 +7,9 @@ import {HeaderComponent} from "../HeaderComponent/HeaderComponent";
 export class ParametersFormPage extends Component {
     render() {
         return (
-            <div className="mainDiv">
-                {/*<h2 className="header">Residential clustering</h2>*/}
-                {/*<div className="buttons">*/}
-                {/*    <Button className="buttonBack" variant="outlined" href={"/new-job/3"}>Back</Button>*/}
-                {/*    <Button variant="outlined">Start Job</Button>*/}
-                {/*</div>*/}
-                <HeaderComponent back="/new-job/3" startJobButton={true}/>
-                <div className="inputDiv">
+            <div>
+                <HeaderComponent back="/new-job/3" next="/new-job/4" startJobButton={true}/>
+                <div>
                     <form>
                         <div className="parameters-form-page__form">
                             {/* Job name */}

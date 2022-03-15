@@ -3,6 +3,8 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    background-color: lightgray;
+    margin-bottom: 16px;
 }
 
 .header-component_header {
