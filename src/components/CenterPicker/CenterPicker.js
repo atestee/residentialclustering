@@ -7,6 +7,13 @@ import "../../../node_modules/leaflet/dist/leaflet.css";
 import {HeaderComponent} from "../HeaderComponent/HeaderComponent";
 
 export class CenterPicker extends Component {
+    selectedCenterGeoJson = null
+
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
+
     componentDidMount() {
         let map = L.map('mapForChoosingCenter', {
             center: [50.07501157760184, 14.416865286199549],
@@ -20,10 +27,20 @@ export class CenterPicker extends Component {
                     zoomOffset: -1
                 }),
             ],
-            preferCanvas: true,
+            preferCanvas: true
         })
 
-        let drawnItems = new L.FeatureGroup();
+        function onEachFeature(feature, layer) {
+            drawnItems.addLayer(layer);
+        }
+
+        let drawnItems = new L.FeatureGroup()
+
+        if (this.props.storage.hasOwnProperty("selectedCenter")) {
+            L.geoJSON(JSON.parse(this.props.storage.getItem("selectedCenter")), {
+                onEachFeature: onEachFeature
+            });
+        }
 
         let drawControl = new L.Control.Draw({
             draw : {
@@ -43,21 +60,39 @@ export class CenterPicker extends Component {
         });
 
         map.addControl(editControl);
-        map.addControl(drawControl);
+        if (drawnItems.getLayers().length === 0) {
+            map.addControl(drawControl);
+        }
         map.addLayer(drawnItems);
+
+        function handleCreate(e) {
+            console.log(e.layerType)
+            drawnItems.addLayer(e.layer);
+            map.removeControl(drawControl);
+
+            // save the polygon data
+            this.props.storage.setItem("selectedCenter", JSON.stringify(drawnItems.toGeoJSON()))
+        }
 
         // when polygon drawn we remove the control button for drawing polygons,
         // because only one polygon is expected
-        map.on('draw:created', function(e) {
-            drawnItems.addLayer(e.layer);
-            console.log(drawnItems.getLayers()[0].toGeoJSON()); // polygon data
-            map.removeControl(drawControl);
-        });
+        map.on('draw:created', handleCreate.bind(this));
 
         // when polygon remove we add the control button for drawing polygons
         map.on('draw:deleted', function() {
             map.addControl(drawControl);
         });
+
+        if (this.props.storage.hasOwnProperty("routesGeoJson")) {
+            let routesGeoJsonFromStorage = JSON.parse(this.props.storage.getItem("routesGeoJson"))
+
+            let routesGeoJsonLayer = new L.GeoJSON(routesGeoJsonFromStorage, {
+                style: function(feature) {
+                    return {color: feature.properties.color};
+                }
+            });
+            routesGeoJsonLayer.addTo(map);
+        }
     }
 
     render() {

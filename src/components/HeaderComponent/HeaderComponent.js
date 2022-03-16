@@ -1,12 +1,9 @@
 import {Component, React} from "react";
 import {Button} from "@mui/material";
+import {Link as RouterLink} from "react-router-dom";
+
 
 export class HeaderComponent extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <div className="header-component">
@@ -14,12 +11,13 @@ export class HeaderComponent extends Component {
                     <h2>Residential clustering</h2>
                 </div>
                 <div className="header-component_buttons">
-                    <Button className="header-component_buttons_back-button" variant="outlined" href={this.props.back}>Back</Button>
+                    <Button component={RouterLink} to={this.props.back} className="header-component_buttons_back-button" variant="outlined">Back</Button>
                     {
                         this.props.startJobButton ?
-                            <Button variant="outlined" href={this.props.next}>Start Job</Button> :
-                            <Button variant="outlined" href={this.props.next}>Next</Button>
+                            <Button component={RouterLink} to={this.props.next} variant="outlined">Start Job</Button> :
+                            <Button component={RouterLink} to={this.props.next} variant="outlined">Next</Button>
                     }
+
                 </div>
             </div>
         )

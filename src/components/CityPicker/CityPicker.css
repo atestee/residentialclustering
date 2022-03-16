@@ -1,4 +1,17 @@
+.city-picker {
+    display: flex;
+    flex-direction: column;
+}
+
 .city-picker_form-control {
     width: 200px;
     margin-left: 16px !important;
+}
+
+.city-picker_form_select {
+    text-transform: capitalize;
+}
+
+.city-picker_form_select_menu-item {
+    text-transform: capitalize;
 }

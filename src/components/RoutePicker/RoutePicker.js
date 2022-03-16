@@ -20,13 +20,13 @@ export class RoutePicker extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isCheckAll: {
+            isCheckAll: (this.props.storage.hasOwnProperty("isCheckAll")) ? JSON.parse(this.props.storage.isCheckAll) : {
                 "tram": false,
                 "metro": false,
                 "bus": false,
                 "funicular": false
             },
-            isCheck: {
+            isCheck: (this.props.storage.hasOwnProperty("isCheck")) ? JSON.parse(this.props.storage.isCheck) : {
                 "tram": [],
                 "metro": [],
                 "bus": [],
@@ -37,40 +37,47 @@ export class RoutePicker extends Component {
                 "metro": false,
                 "bus": false,
                 "funicular": false
-            }
+            },
+            routes: null
         }
-
-        Object.keys(routes).map((t) => (this.routeTypesGrouped)[t] = Object.keys(routes[t]))
     }
 
     componentDidMount() {
-        this.map = L.map('map', {
-            center: [50.07501157760184, 14.416865286199549],
-            zoom: 13,
-            layers: [
-                L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/{id}/{z}/{x}/{y}.png', {
-                    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-                    maxZoom: 18,
-                    id: 'toner-lite',
-                    tileSize: 512,
-                    zoomOffset: -1
-                }),
-            ],
-            preferCanvas: true
-        })
+        // get all the data of the selected city (cityModel) = coords, public transport routes
+        fetch('http://localhost:5000/api/city-model/' + this.props.storage.selectedCity)
+            .then(response => response.json())
+            .then(data => {
+                Object.keys(data["availablePublicTransportRoutes"]).map((t) => (this.routeTypesGrouped)[t] = Object.keys(data["availablePublicTransportRoutes"][t]))
+
+                this.map = L.map('map', {
+                    center: data["centerCoords"],
+                    zoom: 13,
+                    layers: [
+                        L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/{id}/{z}/{x}/{y}.png', {
+                            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+                            maxZoom: 18,
+                            id: 'toner-lite',
+                            tileSize: 512,
+                            zoomOffset: -1
+                        }),
+                    ],
+                    preferCanvas: true
+                })
+
+                this.setState({
+                    routes: data["availablePublicTransportRoutes"]
+                })
+            });
     }
 
     componentDidUpdate(){
+        this.props.storage.setItem("isCheck", JSON.stringify(this.state.isCheck))
+        this.props.storage.setItem("isCheckAll", JSON.stringify(this.state.isCheckAll))
+
         this.updateRoutesGeojson(this.state.isCheck)
 
-        console.log(this.state.isCheck);
-        console.log(this.routesGeojson);
-
         if (this.routesGeojsonLayer !== null) {
-            console.log("a")
-            console.log(this.map.hasLayer(this.routesGeojsonLayer))
             this.map.removeLayer(this.routesGeojsonLayer);
-            console.log(this.map.hasLayer(this.routesGeojsonLayer))
         }
 
         if (this.routesGeojson.features.length > 0) {
@@ -81,6 +88,8 @@ export class RoutePicker extends Component {
             });
             this.routesGeojsonLayer.addTo(this.map);
         }
+
+        this.props.storage.setItem("routesGeoJson", JSON.stringify(this.routesGeojson))
     }
 
     getColor(type, name) {
