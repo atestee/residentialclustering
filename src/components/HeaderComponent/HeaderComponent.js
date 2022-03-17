@@ -4,6 +4,7 @@ import {Link as RouterLink} from "react-router-dom";
 
 
 export class HeaderComponent extends Component {
+
     render() {
         return (
             <div className="header-component">
@@ -14,8 +15,8 @@ export class HeaderComponent extends Component {
                     <Button component={RouterLink} to={this.props.back} className="header-component_buttons_back-button" variant="outlined">Back</Button>
                     {
                         this.props.startJobButton ?
-                            <Button component={RouterLink} to={this.props.next} variant="outlined">Start Job</Button> :
-                            <Button component={RouterLink} to={this.props.next} variant="outlined">Next</Button>
+                            <Button disabled={this.props.nextIsDisabled} component={RouterLink} to={this.props.next} variant="outlined">Start Job</Button> :
+                            <Button disabled={this.props.nextIsDisabled} component={RouterLink} to={this.props.next} variant="outlined">Next</Button>
                     }
 
                 </div>

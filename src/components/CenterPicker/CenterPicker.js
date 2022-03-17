@@ -16,7 +16,7 @@ export class CenterPicker extends Component {
 
     componentDidMount() {
         let map = L.map('mapForChoosingCenter', {
-            center: [50.07501157760184, 14.416865286199549],
+            center: JSON.parse(this.props.storage.getItem("centerCoords")),
             zoom: 13,
             layers: [
                 L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/{id}/{z}/{x}/{y}.png', {
@@ -65,23 +65,26 @@ export class CenterPicker extends Component {
         }
         map.addLayer(drawnItems);
 
-        function handleCreate(e) {
-            console.log(e.layerType)
+        // when polygon drawn we remove the control button for drawing polygons,
+        // because only one polygon is expected
+        map.on('draw:created', function (e){
             drawnItems.addLayer(e.layer);
             map.removeControl(drawControl);
 
-            // save the polygon data
+            // save the polygon data to local storage
             this.props.storage.setItem("selectedCenter", JSON.stringify(drawnItems.toGeoJSON()))
-        }
+        }.bind(this));
 
-        // when polygon drawn we remove the control button for drawing polygons,
-        // because only one polygon is expected
-        map.on('draw:created', handleCreate.bind(this));
+        map.on('draw:edited', function (e){
+            // save the modified polygon data to localStorage
+            this.props.storage.setItem("selectedCenter", JSON.stringify(drawnItems.toGeoJSON()))
+        }.bind(this))
 
-        // when polygon remove we add the control button for drawing polygons
+        // when polygon remove we add the control button for drawing polygons and remove the data from localStorage
         map.on('draw:deleted', function() {
-            map.addControl(drawControl);
-        });
+            map.addControl(drawControl)
+            this.props.storage.removeItem("selectedCenter")
+        }.bind(this));
 
         if (this.props.storage.hasOwnProperty("routesGeoJson")) {
             let routesGeoJsonFromStorage = JSON.parse(this.props.storage.getItem("routesGeoJson"))
@@ -99,6 +102,7 @@ export class CenterPicker extends Component {
         return (
             <div>
                 <HeaderComponent back="/new-job/2" next={"/new-job/4"}/>
+                <h3 style={ { marginBottom: 16, marginLeft: 16 } }>Draw polygon of excluded city center (optional)</h3>
                 <div>
                     <div id={"mapForChoosingCenter"}></div>
                 </div>

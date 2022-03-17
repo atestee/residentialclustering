@@ -64,6 +64,8 @@ export class RoutePicker extends Component {
                     preferCanvas: true
                 })
 
+                this.props.storage.setItem("centerCoords", JSON.stringify(data["centerCoords"]))
+
                 this.setState({
                     routes: data["availablePublicTransportRoutes"]
                 })
@@ -71,6 +73,7 @@ export class RoutePicker extends Component {
     }
 
     componentDidUpdate(){
+        // console.log("update")
         this.props.storage.setItem("isCheck", JSON.stringify(this.state.isCheck))
         this.props.storage.setItem("isCheckAll", JSON.stringify(this.state.isCheckAll))
 
@@ -191,9 +194,13 @@ export class RoutePicker extends Component {
     }
 
     render() {
+        // flatten the array of arrays of chosen routes
+        let zeroRoutesChosen = [].concat.apply([], Object.values(this.state.isCheck)).length === 0
+
         return (
             <div>
-                <HeaderComponent back="/new-job/1" next="/new-job/3"/>
+                <HeaderComponent nextIsDisabled={zeroRoutesChosen} back="/new-job/1" next="/new-job/3"/>
+                <h3 style={ { marginBottom: 16, marginLeft: 16 } }>Choose analysed public transport routes (select at least one route)</h3>
                 <div className="route-picker">
                     <div className="route-picker_dropdown-div">
                         <div>

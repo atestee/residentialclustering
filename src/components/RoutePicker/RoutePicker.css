@@ -10,7 +10,7 @@
 }
 
 .route-picker_map-div {
-    flex-basis: 60%;
+    flex-basis: 65%;
 }
 
 .route-picker_accordion {
@@ -42,12 +42,12 @@
 }
 
 .route-picker_accordion_map-div {
-    flex-basis: 60%;
+    flex-basis: 65%;
 }
 
 #map {
-    height: 85vh;
-    width: 50vw;
+    height: 80vh;
+    width: 60vw;
     /*margin-left: auto;*/
     /*margin-right: auto;*/
 }
