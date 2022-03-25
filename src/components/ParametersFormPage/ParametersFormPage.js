@@ -1,5 +1,5 @@
 import {Component, React} from "react";
-import {Alert, AlertTitle, FormControl, FormHelperText, InputAdornment, TextField} from "@mui/material";
+import {Alert, FormControl, InputAdornment, TextField} from "@mui/material";
 import './ParametersFormPage.css';
 import selectedTypes from '../../data/selectedTypes.json'
 import {HeaderComponent} from "../HeaderComponent/HeaderComponent";
@@ -52,10 +52,10 @@ export class ParametersFormPage extends Component {
         }
 
         if (this.props.storage.hasOwnProperty("selectedCenter")) {
-            let routesGeoJsonFromStorage = JSON.parse(this.props.storage.getItem("selectedCenter"))
+            let selectedCenterFromStorage = JSON.parse(this.props.storage.getItem("selectedCenter"))
 
-            let routesGeoJsonLayer = new L.GeoJSON(routesGeoJsonFromStorage);
-            routesGeoJsonLayer.addTo(map);
+            let selectedCenterLayer = new L.GeoJSON(selectedCenterFromStorage);
+            selectedCenterLayer.addTo(map);
         }
     }
 
