@@ -1,4 +1,10 @@
-#mapForChoosingCenter {
-    height: 80vh;
-    margin: 0 16px;
+.center-picker-map-div {
+    width: 98vw;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    height: 84vh;
+    border-color: rgb(204, 204, 204);
+    border-style: solid;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
