@@ -1,10 +1,11 @@
-import {Component, React} from "react";
+import {Component, React, createRef} from "react";
 import {Accordion, AccordionDetails, AccordionSummary, Checkbox, Typography} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './RoutePicker.css'
 import routes from "../../data/routes.json"
 import L from "leaflet";
 import {HeaderComponent} from "../HeaderComponent/HeaderComponent";
+import { MyMap } from "../Map/MyMap";
 
 export class RoutePicker extends Component {
     routeTypesGrouped = {};
@@ -19,6 +20,7 @@ export class RoutePicker extends Component {
 
     constructor(props) {
         super(props);
+        this.mapRef = createRef();
         this.state = {
             isCheckAll: (this.props.storage.hasOwnProperty("isCheckAll")) ? JSON.parse(this.props.storage.isCheckAll) : {
                 "tram": false,
@@ -48,24 +50,8 @@ export class RoutePicker extends Component {
             .then(response => response.json())
             .then(data => {
                 Object.keys(data["availablePublicTransportRoutes"]).map((t) => (this.routeTypesGrouped)[t] = Object.keys(data["availablePublicTransportRoutes"][t]))
-
-                this.map = L.map('map', {
-                    center: data["centerCoords"],
-                    zoom: 13,
-                    layers: [
-                        L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/{id}/{z}/{x}/{y}.png', {
-                            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
-                            maxZoom: 18,
-                            id: 'toner-lite',
-                            tileSize: 512,
-                            zoomOffset: -1
-                        }),
-                    ],
-                    preferCanvas: true
-                })
-
+                console.log(data["centerCoords"])
                 this.props.storage.setItem("centerCoords", JSON.stringify(data["centerCoords"]))
-
                 this.setState({
                     routes: data["availablePublicTransportRoutes"]
                 })
@@ -73,7 +59,8 @@ export class RoutePicker extends Component {
     }
 
     componentDidUpdate(){
-        // console.log("update")
+        this.map = this.mapRef.current.map
+
         this.props.storage.setItem("isCheck", JSON.stringify(this.state.isCheck))
         this.props.storage.setItem("isCheckAll", JSON.stringify(this.state.isCheckAll))
 
@@ -237,7 +224,11 @@ export class RoutePicker extends Component {
                         </div>
                     </div>
                     <div className="route-picker_map-div">
-                        <div id={"map"}></div>
+                        <MyMap
+                            ref={this.mapRef}
+                            centerCoords={JSON.parse(this.props.storage.getItem("centerCoords"))}
+                            selectedRoutes={JSON.parse(this.props.storage.getItem("routesGeoJson"))}
+                        />
                     </div>
                 </div>
             </div>

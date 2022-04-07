@@ -10,7 +10,13 @@
 }
 
 .route-picker_map-div {
-    flex-basis: 65%;
+    height: 80vh;
+    width: 65vw;
+    margin: 0 auto;
+    border-color: rgb(204, 204, 204);
+    border-style: solid;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
 
 .route-picker_accordion {
@@ -39,15 +45,4 @@
 
 .route-picker_accordion_expanded_checkboxes {
     flex-basis: 30%;
-}
-
-.route-picker_accordion_map-div {
-    flex-basis: 65%;
-}
-
-#map {
-    height: 80vh;
-    width: 60vw;
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
 }
