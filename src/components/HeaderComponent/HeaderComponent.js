@@ -4,7 +4,6 @@ import {Link as RouterLink} from "react-router-dom";
 
 
 export class HeaderComponent extends Component {
-
     render() {
         return (
             <div className="header-component">

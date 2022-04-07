@@ -1,0 +1,43 @@
+.detailed-viz {
+    display: flex;
+    flex-direction: column;
+}
+
+.detailed-viz__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 8vh;
+}
+
+.detailed-viz__header__buttons {
+    margin-top: 8px;
+}
+
+.detailed-viz__header__button {
+    margin-right: 16px !important;
+}
+
+.detailed-viz__header__button__span {
+    margin-right: 8px;
+}
+
+.detailed-viz__body__map-div {
+    width: 99vw;
+    margin: 0.5vw;
+    height: 89vh;
+    border-color: rgb(204, 204, 204);
+    border-style: solid;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.detailed-viz__body {
+    display: flex;
+    flex-direction: row;
+}
+
+.detailed-viz__body__metrics-div {
+    width: 40vw;
+    border-color: rgb(204, 204, 204);
+}
