@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: space-between;
     background-color: lightgray;
-    margin-bottom: 16px;
+    height: 8vh;
 }
 
 .header-component_header {
