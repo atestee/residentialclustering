@@ -1,0 +1,15 @@
+.map-change-control {
+    background-color: white !important;
+    opacity: 1;
+    border-color: rgb(204, 204, 204);
+    border-style: solid;
+    border-width: thin;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 8px;
+}
+
+.map-change-control__form {
+    display: flex;
+    flex-direction: column;
+}
