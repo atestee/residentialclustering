@@ -17,27 +17,25 @@ export class CityPicker extends Component {
 
     // get list of offered cities
     componentDidMount() {
-        if (this.props.storage.hasOwnProperty("selectedCity")){
-            this.setState((state) => {
-                return {
-                    selectedCity: this.props.storage.getItem("selectedCity")
-                }
-            })
-        }
-
         // get the list of available cities from server
         fetch("http://localhost:5000/api/cities/")
             .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw response;
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
 
             })
             .then((data) => {
-                this.setState({
-                    cityList: data
-                })
+                let selectedCity = '';
+                if (this.props.storage.hasOwnProperty("selectedCity")){
+                    selectedCity = this.props.storage.getItem("selectedCity");
+                }
+                this.setState( {
+                        selectedCity,
+                        cityList: data
+                    }
+                );
             })
             .catch((error) => {
                 console.error("Error fetching data: " + error);
