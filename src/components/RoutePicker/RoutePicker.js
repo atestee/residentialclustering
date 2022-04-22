@@ -50,7 +50,6 @@ export class RoutePicker extends Component {
             .then(response => response.json())
             .then(data => {
                 Object.keys(data["availablePublicTransportRoutes"]).map((t) => (this.routeTypesGrouped)[t] = Object.keys(data["availablePublicTransportRoutes"][t]))
-                console.log(data["centerCoords"])
                 this.props.storage.setItem("centerCoords", JSON.stringify(data["centerCoords"]))
                 this.setState({
                     routes: data["availablePublicTransportRoutes"]
