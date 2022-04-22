@@ -17,8 +17,6 @@ export class CityPicker extends Component {
 
     // get list of offered cities
     componentDidMount() {
-        console.log(this.props.storage.getItem("selectedCity"))
-
         if (this.props.storage.hasOwnProperty("selectedCity")){
             this.setState((state) => {
                 return {
@@ -38,7 +36,7 @@ export class CityPicker extends Component {
             })
             .then((data) => {
                 this.setState({
-                    cityList: data.cityList
+                    cityList: data
                 })
             })
             .catch((error) => {
@@ -57,7 +55,7 @@ export class CityPicker extends Component {
         this.props.storage.setItem("selectedCity", event.target.value)
     }
 
-    handleClose(event){
+    handleClose(){
         // check if the city was selected, if not set error to true and show the error message
         this.setState((state) => ({
             formIsInErrorState: state.selectedCity === ""
@@ -77,7 +75,7 @@ export class CityPicker extends Component {
                         Analysed city wasn't selected!
                     </Alert>
                 }
-                <FormControl className="city-picker_form-control" error={this.state.formIsInErrorState} >
+                <FormControl className="city-picker_form-control" error={this.state.formIsInErrorState} required={true} >
                     <InputLabel id="city-select-label">City</InputLabel>
                     <Select
                         value={this.state.selectedCity}
