@@ -28,7 +28,7 @@ export class App extends Component {
                         <Route path="/new-job/3" element={<CenterPicker storage={this.myStorage} />} />
                         <Route path="/new-job/4" element={<ParametersFormPage storage={this.myStorage} />} />
                         <Route path="/job-management" element={<JobManagerPicker storage={this.myStorage} />} />
-                        <Route path="/jobs/:jobId" element={<VisualizationNavigator storage={this.myStorage} />} />
+                        <Route path="/jobs/:jobId" element={<VisualizationNavigator storage={this.myStorage}/>} />
                     </Routes>
                 </div>
             </Router>
