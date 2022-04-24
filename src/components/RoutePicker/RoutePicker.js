@@ -126,8 +126,15 @@ export class RoutePicker extends Component {
             let newIsCheckAll = { ...this.state.isCheckAll };
 
             if (!state.isCheck[routeType].includes(routeName)) {
+                // click
                 newIsCheck[routeType] = [...newIsCheck[routeType], routeName];
+                // if last route in route group was clicked
+                if (newIsCheck[routeType].length === this.routeTypesGrouped[routeType].length) {
+                    newIsCheckAll[routeType] = true;
+                }
+
             } else {
+                // unclick
                 newIsCheck[routeType] = [...newIsCheck[routeType].filter(route => route !== routeName)];
                 newIsCheckAll[routeType] = false;
             }
@@ -140,8 +147,9 @@ export class RoutePicker extends Component {
     }
 
     handleExpand(routeType) {
+        this.setState()
         this.setState((state) => {
-            let newIsExpanded = {...this.state.isExpanded};
+            let newIsExpanded = {...state.isExpanded};
 
             if (newIsExpanded[routeType]) {
                 newIsExpanded[routeType] = false;
