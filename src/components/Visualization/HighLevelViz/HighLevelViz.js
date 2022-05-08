@@ -2,20 +2,25 @@ import {Component, createRef} from "react";
 import L from "leaflet";
 
 import './HighLevelViz.css'
-import { Tab, Tabs, Box, Button } from "@mui/material";
+import { Tab, Tabs, Box } from "@mui/material";
 import { TabPanel } from "../../mui/TabPanel";
 import { A11yProps } from "../../mui/A11yProps";
-import { control } from "leaflet/dist/leaflet-src.esm";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
-import {HighLevelVizMap} from "../../Map/HighLevelVizMap";
+import {HighLevelVizMap} from "../../Maps/HighLevelVizMap";
+import {HeaderForHighLevelVisualization} from "../../Headers/HeaderForHighLevelVisualization";
+import "./HighLevelViz.css";
+
+export const FOCUSED_COLOR_POLYGON = "#1976d2"
+export const UNFOCUSED_COLOR_POLYGON = "#76b0e8"
+export const FOCUSED_COLOR_BUILDINGS = "rgba(243,225,5,1)"
+// export const FOCUSED_COLOR_BUILDINGS = "rgb(77,208,215)"
+
 
 export class HighLevelViz extends Component {
     map = null
     clusterLayer = new L.FeatureGroup()
     clusterPolygons = {}
-    focusedColor = "#1976d2"
-    unfocusedColor = "#76b0e8"
+    clusterBuildings = {}
+    clusterStops = new L.FeatureGroup()
     testResponse = this.props.analysisData;
 
     constructor(props) {
@@ -35,14 +40,14 @@ export class HighLevelViz extends Component {
 
     handleChange(event){
         if (event.target.value !== "") {
-            this.setState((state) => ({
+            this.setState(() => ({
                 numberOfShownClusters: event.target.value
             }))
         }
     }
 
     handleTabChange(event, newValue) {
-        this.setState((state) => ({
+        this.setState(() => ({
             value: newValue
         }))
     }
@@ -53,18 +58,16 @@ export class HighLevelViz extends Component {
         }))
     }
 
-    putFocusOnCluster(clusterName) {
-        // change color of focused cluster - optional
-        let cluster = this.clusterPolygons[clusterName]
-        cluster.setStyle({
-            color: this.focusedColor
-        })
-        cluster.bringToFront()
-
+    // only shows the focused cluster, others invisible
+    putFocusOnCluster_OnlyOneCluster(clusterName) {
         // make other clusters invisible
         Object.keys(this.clusterPolygons).map((key) => {
             if (key !== clusterName) {
                 this.clusterPolygons[key].setStyle({
+                    fill: false,
+                    stroke: false
+                })
+                this.clusterBuildings[key].setStyle({
                     fill: false,
                     stroke: false
                 })
@@ -73,43 +76,69 @@ export class HighLevelViz extends Component {
         })
     }
 
-    removeFocusFromCluster(clusterName) {
-        // make all clusters visible and set their color to the unfocused one
-        Object.values(this.clusterPolygons).map((cluster) => (
-            cluster.setStyle({
-                color: this.focusedColor,
+    // show focused cluster with more saturated color
+    putFocusOnCluster_HighlightCluster(clusterName) {
+        let polygon = this.clusterPolygons[clusterName];
+        let buildings = this.clusterBuildings[clusterName];
+
+        polygon.bringToFront();
+        buildings.bringToFront();
+
+        // set the opacity of other cluster to a lower value and set the color to a brighter one
+        Object.keys(this.clusterPolygons).map((key) => {
+            if (key !== clusterName) {
+                this.clusterPolygons[key].setStyle({
+                    opacity: 0.1,
+                    color: UNFOCUSED_COLOR_POLYGON
+                })
+                this.clusterBuildings[key].setStyle({
+                    fill: false,
+                    stroke: false
+                })
+            }
+            return key
+        })
+    }
+
+    removeFocus() {
+        // make all clusters visible and set their color to the focused one
+        Object.values(this.clusterPolygons).map((polygon) => (
+            polygon.setStyle({
+                color: FOCUSED_COLOR_POLYGON,
+                fill: true,
+                opacity: 1,
+                stroke: true,
+            })
+        ))
+
+        Object.values(this.clusterBuildings).map((buildings) => (
+            buildings.setStyle({
                 fill: true,
                 stroke: true
             })
         ))
+
+        this.clusterStops.bringToFront()
     }
 
     render() {
         return (
             <div className={"high-level-viz"}>
-                <div className="high-level-viz_header-div ">
-                    <h2 className="high-level-viz_header-div_header">High Level Visualization</h2>
-                    <div className="high-level-viz_header-div_metrics-button">
-                        <Button
-                            style={{padding: "5 8", minWidth: 32}}
-                            variant={"outlined"}
-                            onClick={this.handleClickOnMetricsButton.bind(this)}
-                        >
-                            <span style={{marginRight: 8}}>Details </span>
-                            <FontAwesomeIcon icon={faBars}/>
-                        </Button>
-                    </div>
-                </div>
+                <HeaderForHighLevelVisualization back={"/"} handleClickOnMetricsButton={this.handleClickOnMetricsButton.bind(this)}/>
                 <div className="high-level-viz_body">
                     <div className="high-level-viz_map-div">
                         <HighLevelVizMap
                             ref={ this.mapRef }
                             centerCoords={ JSON.parse(this.props.storage.getItem("centerCoords")) }
                             handleChange={ this.handleChange.bind(this) }
-                            showDetailedViz={ this.props.showDetialedViz }
+                            showDetailedViz={ this.props.showDetailedViz }
                             analysisData={ this.props.analysisData }
                             numberOfShownClusters={ this.state.numberOfShownClusters }
                             clusterPolygons={ this.clusterPolygons }
+                            clusterBuildings={ this.clusterBuildings }
+                            clusterStops={this.clusterStops}
+                            putFocusOnCluster={ this.putFocusOnCluster_HighlightCluster }
+                            removeFocus={this.removeFocus}
                         />
                     </div>
                     { this.state.metricsDrawerOpen &&
@@ -138,28 +167,31 @@ export class HighLevelViz extends Component {
                                             <div className="high-level-viz_metrics-div_label">Minimal walking
                                                 distance:
                                             </div>
-                                            <div className="high-level-viz_metrics-div_value">400m</div>
+                                            <div className="high-level-viz_metrics-div_value">{this.props.parameters.minWalkingDistanceMeters} m</div>
                                             <div className="high-level-viz_metrics-div_label">Maximal driving
                                                 time:
                                             </div>
-                                            <div className="high-level-viz_metrics-div_value">30min</div>
+                                            <div className="high-level-viz_metrics-div_value">{this.props.parameters.maxTaxiRideDurationMinutes} minutes</div>
                                             <div className="high-level-viz_metrics-div_label">Maximal driving
                                                 distance:
                                             </div>
-                                            <div className="high-level-viz_metrics-div_value">3500m</div>
+                                            <div className="high-level-viz_metrics-div_value">{this.props.parameters.maxDrivingDistanceMeters} m</div>
                                         </div>
                                     </TabPanel>
                                     <TabPanel value={this.state.value} index={1}>
                                         <div>
                                             {
-                                                this.testResponse.map((res) => (
-                                                    <div className="high-level-viz_metrics-div"
+                                                this.testResponse.map((res, index) => (
+                                                    <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                          key={res.geography.features[0].properties.name + "-numberOfIncludedResidents"}
                                                          onMouseEnter={() => {
-                                                             this.putFocusOnCluster(res.geography.features[0].properties.name)
+                                                             this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
                                                          }}
                                                          onMouseLeave={() => {
-                                                             this.removeFocusFromCluster(res.geography.features[0].properties.name)
+                                                             this.removeFocus()
+                                                         }}
+                                                         onClick={ () => {
+                                                             this.props.showDetailedViz(index, res.geography.features[0].properties.name)
                                                          }}
                                                     >
                                                         <div className="high-level-viz_metrics-div_label"
@@ -169,7 +201,7 @@ export class HighLevelViz extends Component {
                                                         </div>
                                                         <div className="high-level-viz_metrics-div_value"
                                                              key={res.geography.features[0].properties.name + "-value"}>
-                                                            {Math.round(res.metrics.numberOfIncludedResidents).toLocaleString()}
+                                                            {Math.round(res.metrics.numberOfIncludedResidents)} residents
                                                         </div>
                                                     </div>
                                                 ))
@@ -180,13 +212,16 @@ export class HighLevelViz extends Component {
                                         <div>
                                             {
                                                 this.testResponse.map((res) => (
-                                                    <div className="high-level-viz_metrics-div"
+                                                    <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                          key={res.geography.features[0].properties.name + "-totalClusterArea"}
                                                          onMouseEnter={() => {
-                                                             this.putFocusOnCluster(res.geography.features[0].properties.name)
+                                                             this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
                                                          }}
                                                          onMouseLeave={() => {
-                                                             this.removeFocusFromCluster(res.geography.features[0].properties.name)
+                                                             this.removeFocus()
+                                                         }}
+                                                         onClick={ () => {
+                                                             this.props.showDetailedViz(res.geography.features[0].properties.name)
                                                          }}
                                                     >
                                                         <div className="high-level-viz_metrics-div_label"
@@ -195,14 +230,14 @@ export class HighLevelViz extends Component {
                                                                  this.putFocusOnCluster(res.geography.features[0].properties.name)
                                                              }}
                                                              onMouseLeave={() => {
-                                                                 this.removeFocusFromCluster(res.geography.features[0].properties.name)
+                                                                 this.removeFocus()
                                                              }}
                                                         >
                                                             {res.geography.features[0].properties.name}
                                                         </div>
                                                         <div className="high-level-viz_metrics-div_value"
                                                              key={res.geography.features[0].properties.name + "-value"}>
-                                                            {Math.round(res.metrics.totalCluster).toLocaleString()} km<sup>2</sup>
+                                                            {(res.metrics.totalClusterArea / 1000000).toFixed(2).toLocaleString()} km<sup>2</sup>
                                                         </div>
                                                     </div>
                                                 ))
