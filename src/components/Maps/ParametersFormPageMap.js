@@ -1,13 +1,12 @@
-import { Component } from "react";
-import '../RoutePicker/RoutePicker.css'
-import './MyMap.css'
+import {Component} from "react";
+import './Map.css'
 import L from "leaflet";
 
 
-export class MyMap extends Component {
+export class ParametersFormPageMap extends Component {
     componentDidMount() {
         this.map = L.map("map", {
-            center: this.props.centerCoords,
+            center: JSON.parse(this.props.storage.getItem("centerCoords")),
             zoom: 13,
             layers: [
                 L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/{id}/{z}/{x}/{y}.png', {
@@ -21,20 +20,16 @@ export class MyMap extends Component {
             preferCanvas: true
         });
 
-        if (this.props.selectedRoutes !== null) {
-            let routesGeoJson = this.props.selectedRoutes;
-            let routesGeoJsonLayer = new L.GeoJSON(routesGeoJson, {
-                style: function(feature) {
-                    return {color: feature.properties.color};
-                }
-            });
-            routesGeoJsonLayer.addTo(this.map)
-        }
+        console.log(Object.keys(this.props.storage))
 
-        if (this.props.selectedCenter !== null) {
-            let selectedCenterGeoJson = this.props.selectedCenter;
-            let selectedCenterLayer = new L.GeoJSON(selectedCenterGeoJson);
-            selectedCenterLayer.addTo(this.map)
+        L.geoJSON(JSON.parse(this.props.storage.getItem("routesGeoJson")), {
+            style: function(feature) {
+                return {color: feature.properties.color};
+            }
+        }).addTo(this.map);
+
+        if (this.props.storage.hasOwnProperty("selectedCenter")) {
+            L.geoJSON(JSON.parse(this.props.storage.getItem("selectedCenter"))).addTo(this.map);
         }
     }
 
