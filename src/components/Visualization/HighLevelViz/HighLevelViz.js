@@ -1,4 +1,4 @@
-import {Component, createRef} from "react";
+import {Component} from "react";
 import L from "leaflet";
 
 import './HighLevelViz.css'
@@ -21,21 +21,24 @@ export class HighLevelViz extends Component {
     clusterPolygons = {}
     clusterBuildings = {}
     clusterStops = new L.FeatureGroup()
-    testResponse = this.props.analysisData;
+    jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
+    // jobId = JSON.parse(this.props.storage.getItem("jobId"));
+    // jobData = this.props.storage.getItem("jobData");
+    jobId = this.props.storage.getItem("jobId");
+    parameters = JSON.parse(this.props.storage.getItem("jobData"))["parameters"];
 
     constructor(props) {
         super(props);
-        this.mapRef = createRef();
         this.state = {
             redirect: null,
-            numberOfShownClusters: this.testResponse.length,
+            numberOfShownClusters: this.jobData.length,
             value: 0,
             metricsDrawerOpen: false,
         }
     }
 
     componentDidMount() {
-        this.map = this.mapRef.current.map;
+        console.log(this.jobData)
     }
 
     handleChange(event){
@@ -121,6 +124,11 @@ export class HighLevelViz extends Component {
         this.clusterStops.bringToFront()
     }
 
+    showDetailedViz(clusterIdx) {
+        this.props.storage.setItem("clusterIdx", clusterIdx)
+        this.props.navigate("/jobs/" + this.props.storage.getItem("jobId") + "/" + clusterIdx)
+    }
+
     render() {
         return (
             <div className={"high-level-viz"}>
@@ -128,10 +136,10 @@ export class HighLevelViz extends Component {
                 <div className="high-level-viz_body">
                     <div className="high-level-viz_map-div">
                         <HighLevelVizMap
-                            ref={ this.mapRef }
+                            storage={this.props.storage}
                             centerCoords={ JSON.parse(this.props.storage.getItem("centerCoords")) }
                             handleChange={ this.handleChange.bind(this) }
-                            showDetailedViz={ this.props.showDetailedViz }
+                            showDetailedViz={ this.showDetailedViz.bind(this) }
                             analysisData={ this.props.analysisData }
                             numberOfShownClusters={ this.state.numberOfShownClusters }
                             clusterPolygons={ this.clusterPolygons }
@@ -167,21 +175,21 @@ export class HighLevelViz extends Component {
                                             <div className="high-level-viz_metrics-div_label">Minimal walking
                                                 distance:
                                             </div>
-                                            <div className="high-level-viz_metrics-div_value">{this.props.parameters.minWalkingDistanceMeters} m</div>
+                                            <div className="high-level-viz_metrics-div_value">{this.parameters.minWalkingDistanceMeters} m</div>
                                             <div className="high-level-viz_metrics-div_label">Maximal driving
                                                 time:
                                             </div>
-                                            <div className="high-level-viz_metrics-div_value">{this.props.parameters.maxTaxiRideDurationMinutes} minutes</div>
+                                            <div className="high-level-viz_metrics-div_value">{this.parameters.maxTaxiRideDurationMinutes} minutes</div>
                                             <div className="high-level-viz_metrics-div_label">Maximal driving
                                                 distance:
                                             </div>
-                                            <div className="high-level-viz_metrics-div_value">{this.props.parameters.maxDrivingDistanceMeters} m</div>
+                                            <div className="high-level-viz_metrics-div_value">{this.parameters.maxDrivingDistanceMeters} m</div>
                                         </div>
                                     </TabPanel>
                                     <TabPanel value={this.state.value} index={1}>
                                         <div>
                                             {
-                                                this.testResponse.map((res, index) => (
+                                                this.jobData.map((res, index) => (
                                                     <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                          key={res.geography.features[0].properties.name + "-numberOfIncludedResidents"}
                                                          onMouseEnter={() => {
@@ -191,7 +199,7 @@ export class HighLevelViz extends Component {
                                                              this.removeFocus()
                                                          }}
                                                          onClick={ () => {
-                                                             this.props.showDetailedViz(index, res.geography.features[0].properties.name)
+                                                             this.showDetailedViz(index).bind(this)
                                                          }}
                                                     >
                                                         <div className="high-level-viz_metrics-div_label"
@@ -211,7 +219,7 @@ export class HighLevelViz extends Component {
                                     <TabPanel value={this.state.value} index={2}>
                                         <div>
                                             {
-                                                this.testResponse.map((res) => (
+                                                this.jobData.map((res, index) => (
                                                     <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                          key={res.geography.features[0].properties.name + "-totalClusterArea"}
                                                          onMouseEnter={() => {
@@ -221,13 +229,13 @@ export class HighLevelViz extends Component {
                                                              this.removeFocus()
                                                          }}
                                                          onClick={ () => {
-                                                             this.props.showDetailedViz(res.geography.features[0].properties.name)
+                                                             this.props.showDetailedViz(index)
                                                          }}
                                                     >
                                                         <div className="high-level-viz_metrics-div_label"
                                                              key={res.geography.features[0].properties.name + "-label"}
                                                              onMouseEnter={() => {
-                                                                 this.putFocusOnCluster(res.geography.features[0].properties.name)
+                                                                 this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
                                                              }}
                                                              onMouseLeave={() => {
                                                                  this.removeFocus()

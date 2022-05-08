@@ -4,7 +4,9 @@ import {Heatmap} from "../../Maps/Heatmap";
 import {IncludedExcludedMap} from "../../Maps/IncludedExcludedMap";
 import {BarChart, Bar, Cell, XAxis, Legend, Pie, PieChart} from 'recharts';
 import colorGradient from "javascript-color-gradient";
-import {HeaderForHighLevelVisualization} from "../../Headers/HeaderForDetailedVisualization";
+import {
+    HeaderForDetailedVisualization
+} from "../../Headers/HeaderForDetailedVisualization";
 
 const N_BINS = 7;
 
@@ -27,6 +29,12 @@ export class DetailedViz extends Component {
         {"name": "non-productiveAge", "value": 53.3}
     ]
 
+    jobData = JSON.parse(this.props.storage.getItem("jobData"))
+    clusterIdx = this.props.storage.getItem("clusterIdx")
+    clusterData = this.jobData["clusters"][this.clusterIdx]
+    parameters = this.jobData["parameters"]
+    clusterName = this.clusterData.geography.features[0].properties.name
+
     constructor(props) {
         super(props);
         this.state = {
@@ -34,8 +42,8 @@ export class DetailedViz extends Component {
             metricsDrawerOpen: true,
             focusedDistanceGroupIndex: null,
         }
-        this.taxiRideDurationHist = JSON.parse(this.props.clusterData.histograms["taxiRideDurationMinutes"]);
-        let delta = (this.props.parameters.maxTaxiRideDurationMinutes / N_BINS);
+        this.taxiRideDurationHist = JSON.parse(this.clusterData.histograms["taxiRideDurationMinutes"]);
+        let delta = (this.parameters.maxTaxiRideDurationMinutes / N_BINS);
         this.taxiRideDurationHistData = this.taxiRideDurationHist.map((elem, index) => {
             const start = (index * delta);
             const end = (index + 1) * delta;
@@ -53,14 +61,13 @@ export class DetailedViz extends Component {
             })
         })
 
-        this.taxiRideDistanceHist = JSON.parse(this.props.clusterData.histograms["taxiRideDistanceMeters"]);
-        delta = this.props.parameters.maxDrivingDistanceMeters / N_BINS;
+        this.taxiRideDistanceHist = JSON.parse(this.clusterData.histograms["taxiRideDistanceMeters"]);
+        delta = this.parameters.maxDrivingDistanceMeters / N_BINS;
 
         this.taxiRideDistanceHistData = this.taxiRideDistanceHist.map((elem, index) => ({
             "value": elem,
             "key": String((index * delta / 1000).toFixed(1)) + " - " + String(((index + 1) * delta / 1000).toFixed(1))
         }))
-
     }
 
     showMap() {
@@ -70,9 +77,9 @@ export class DetailedViz extends Component {
                     <Heatmap
                         centerCoords={JSON.parse(this.props.storage.getItem("centerCoords"))}
                         setShownMap={this.setShownMap.bind(this)}
-                        clusterPolygon={this.props.clusterData.geography}
-                        includedResidentialBuildings={this.props.clusterData.includedResidentialBuildings}
-                        jobParameters={this.props.parameters}
+                        clusterPolygon={this.clusterData.geography}
+                        includedResidentialBuildings={this.clusterData.includedResidentialBuildings}
+                        jobParameters={this.parameters}
                         colorGradientArray={this.colorGradientArray}
                         colorGradientArrayFaded={this.colorGradientArrayFaded}
                         legendValuesArray={Object.values(this.taxiRideDistanceHistData.map((elem) => (elem.key)))}
@@ -84,9 +91,9 @@ export class DetailedViz extends Component {
                    <IncludedExcludedMap
                         centerCoords={JSON.parse(this.props.storage.getItem("centerCoords"))}
                         setShownMap={this.setShownMap.bind(this)}
-                        clusterPolygon={this.props.clusterData.geography}
-                        includedResidentialBuildings={this.props.clusterData.includedResidentialBuildings}
-                        excludedResidentialBuildings={this.props.clusterData.excludedResidentialBuildings}
+                        clusterPolygon={this.clusterData.geography}
+                        includedResidentialBuildings={this.clusterData.includedResidentialBuildings}
+                        excludedResidentialBuildings={this.clusterData.excludedResidentialBuildings}
                    />
                )
             default:
@@ -121,9 +128,9 @@ export class DetailedViz extends Component {
     render() {
         return (
             <div className="detailed-viz">
-                <HeaderForHighLevelVisualization
-                    clusterName={this.props.clusterName}
-                    showHighLevelViz={this.props.showHighLevelViz}
+                <HeaderForDetailedVisualization
+                    storage={this.props.storage}
+                    clusterName={this.clusterName}
                     handleClickOnMetricsButton={this.handleClickOnMetricsButton.bind(this)}
                 />
                 <div className="detailed-viz__body">

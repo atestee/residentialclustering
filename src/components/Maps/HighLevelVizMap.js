@@ -8,7 +8,7 @@ import {
 
 export class HighLevelVizMap extends Component {
     clusterLayer = new L.FeatureGroup();
-    testResponse = this.props.analysisData;
+    jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
 
     componentDidMount() {
         this.map = L.map("map", {
@@ -58,7 +58,7 @@ export class HighLevelVizMap extends Component {
         };
 
         //https://gis.stackexchange.com/questions/131944/leaflet-marker-mouseover-popup
-        this.testResponse.slice(0, this.props.numberOfShownClusters).map((res, index) => {
+        this.jobData.slice(0, this.props.numberOfShownClusters).map((res, index) => {
             let clusterPolygon = new L.GeoJSON(res.geography, {
                 onEachFeature: this.onEachFeatureWithIndex(index).bind(this)
             })
@@ -111,7 +111,7 @@ export class HighLevelVizMap extends Component {
 
             layer.on({
                 click: () => {
-                    this.props.showDetailedViz(index, feature.properties.name);
+                    this.props.showDetailedViz(index);
                 },
                 mouseover: function () {
                     this.props.putFocusOnCluster(feature.properties.name)
