@@ -4,7 +4,6 @@ import {ParametersFormRow} from "./ParametersFormRow";
 import './ParametersFormPage.css';
 import {HeaderWithBackAndStartJob} from "../../Headers/HeaderWithBackAndStartJob";
 import {ParametersFormPageMap} from "../../Maps/ParametersFormPageMap";
-// import postData from "../rest.js";
 
 const transitTypes = {
     "METRO": 1,

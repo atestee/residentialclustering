@@ -9,7 +9,6 @@ import Paper from '@mui/material/Paper';
 import CloseIcon from '@mui/icons-material/Close';
 import {Link as RouterLink} from "react-router-dom";
 import "./JobManagement.css";
-import {getData} from "../rest";
 import {
     Button,
     CircularProgress,
@@ -35,10 +34,19 @@ export class JobManagement extends Component {
     }
 
     componentDidMount() {
-        getData("http://localhost:5000/api/job-management")
-            .then(data => {
+        fetch("http://localhost:5000/api/job-management")
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+            })
+            .then((data) => {
                 this.setState({"jobs": data})
                 this.emptyRows = this.state.page > 0 ? Math.max(0, (1 + this.state.page) * this.state.rowsPerPage - data.length) : 0;
+            })
+            .catch((error) => {
+                console.error("Error fetching data: " + error);
             })
     }
 
