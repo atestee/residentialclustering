@@ -1,9 +1,9 @@
 import {Component, React} from "react";
 import {Button} from "@mui/material";
 import {Link as RouterLink} from "react-router-dom";
+import "./HeaderStyles.css";
 
-
-export class HeaderComponent extends Component {
+export class HeaderWithBackAndStartJob extends Component {
     render() {
         return (
             <div className="header-component">
@@ -12,12 +12,7 @@ export class HeaderComponent extends Component {
                 </div>
                 <div className="header-component_buttons">
                     <Button component={RouterLink} to={this.props.back} className="header-component_buttons_back-button" variant="outlined">Back</Button>
-                    {
-                        this.props.startJobButton ?
-                            <Button disabled={this.props.nextIsDisabled} component={RouterLink} to={this.props.next} variant="outlined">Start Job</Button> :
-                            <Button disabled={this.props.nextIsDisabled} component={RouterLink} to={this.props.next} variant="outlined">Next</Button>
-                    }
-
+                    <Button disabled={this.props.nextIsDisabled} component={RouterLink} to={this.props.next} variant="outlined" onClick={this.props.handleStartJob}>Start Job</Button>
                 </div>
             </div>
         )
