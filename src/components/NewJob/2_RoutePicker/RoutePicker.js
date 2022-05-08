@@ -1,26 +1,23 @@
-import {Component, React, createRef} from "react";
+import {Component, React} from "react";
 import {Accordion, AccordionDetails, AccordionSummary, Checkbox, Typography} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './RoutePicker.css'
-import routes from "../../data/routes.json"
-import L from "leaflet";
-import {HeaderComponent} from "../HeaderComponent/HeaderComponent";
-import { MyMap } from "../Map/MyMap";
+import {HeaderWithBackAndNext} from "../../Headers/HeaderWithBackAndNext";
+import {RoutePickerMap} from "../../Maps/RoutePickerMap";
 
 export class RoutePicker extends Component {
-    routeTypesGrouped = {};
+    routeTypesGrouped = this.props.routeTypesGrouped;
     map = null;
-    routesGeojsonLayer = null;
-
-    routesGeojson = {
-        "type": "FeatureCollection",
-        "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-        "features": []
-    }
 
     constructor(props) {
         super(props);
-        this.mapRef = createRef();
+
+        this.routesGeojson = this.props.storage.hasOwnProperty("routesGeoJson") ? JSON.parse(this.props.storage.routesGeoJson) : {
+            "type": "FeatureCollection",
+            "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+            "features": []
+        };
+
         this.state = {
             isCheckAll: (this.props.storage.hasOwnProperty("isCheckAll")) ? JSON.parse(this.props.storage.isCheckAll) : {
                 "tram": false,
@@ -39,46 +36,14 @@ export class RoutePicker extends Component {
                 "metro": false,
                 "bus": false,
                 "funicular": false
-            },
-            routes: null
+            }
         }
-    }
-
-    componentDidMount() {
-        // get all the data of the selected city (cityModel) = coords, public transport routes
-        fetch('http://localhost:5000/api/city-model/' + this.props.storage.selectedCity)
-            .then(response => response.json())
-            .then(data => {
-                Object.keys(data["availablePublicTransportRoutes"]).map((t) => (this.routeTypesGrouped)[t] = Object.keys(data["availablePublicTransportRoutes"][t]))
-                this.props.storage.setItem("centerCoords", JSON.stringify(data["centerCoords"]))
-                this.setState({
-                    routes: data["availablePublicTransportRoutes"]
-                })
-            });
     }
 
     componentDidUpdate(){
-        this.map = this.mapRef.current.map
-
+        this.props.storage.setItem("routesGeoJson", JSON.stringify(this.routesGeojson))
         this.props.storage.setItem("isCheck", JSON.stringify(this.state.isCheck))
         this.props.storage.setItem("isCheckAll", JSON.stringify(this.state.isCheckAll))
-
-        this.updateRoutesGeojson(this.state.isCheck)
-
-        if (this.routesGeojsonLayer !== null) {
-            this.map.removeLayer(this.routesGeojsonLayer);
-        }
-
-        if (this.routesGeojson.features.length > 0) {
-            this.routesGeojsonLayer = new L.GeoJSON(this.routesGeojson, {
-                style: function(feature) {
-                    return {color: feature.properties.color};
-                }
-            });
-            this.routesGeojsonLayer.addTo(this.map);
-        }
-
-        this.props.storage.setItem("routesGeoJson", JSON.stringify(this.routesGeojson))
     }
 
     getColor(type, name) {
@@ -113,6 +78,8 @@ export class RoutePicker extends Component {
                 newIsCheck[routeTypeName] = [];
             }
 
+            this.updateRoutesGeojson(newIsCheck)
+
             return {
                 isCheckAll: newIsCheckAll,
                 isCheck: newIsCheck
@@ -139,6 +106,8 @@ export class RoutePicker extends Component {
                 newIsCheckAll[routeType] = false;
             }
 
+            this.updateRoutesGeojson(newIsCheck)
+
             return {
                 isCheckAll: newIsCheckAll,
                 isCheck: newIsCheck
@@ -147,7 +116,6 @@ export class RoutePicker extends Component {
     }
 
     handleExpand(routeType) {
-        this.setState()
         this.setState((state) => {
             let newIsExpanded = {...state.isExpanded};
 
@@ -179,21 +147,22 @@ export class RoutePicker extends Component {
                         },
                         "geometry": {
                             "type": "LineString",
-                            "coordinates": routes[routeType][route]
+                            "coordinates": this.props.availableRoutes[routeType][route]
                         }
                     }
                 )
             ))
         ))
+
+        console.log("routes geojson updated")
     }
 
     render() {
-        // flatten the array of arrays of chosen routes
         let zeroRoutesChosen = [].concat.apply([], Object.values(this.state.isCheck)).length === 0
 
         return (
             <div>
-                <HeaderComponent nextIsDisabled={zeroRoutesChosen} back="/new-job/1" next="/new-job/3"/>
+                <HeaderWithBackAndNext nextIsDisabled={zeroRoutesChosen} back="/new-job/1" next="/new-job/3"/>
                 <h3 style={ { marginBottom: 16, marginLeft: 16 } }>Choose analysed public transport routes (select at least one route)</h3>
                 <div className="route-picker">
                     <div className="route-picker_dropdown-div">
@@ -231,10 +200,9 @@ export class RoutePicker extends Component {
                         </div>
                     </div>
                     <div className="route-picker_map-div">
-                        <MyMap
-                            ref={this.mapRef}
+                        <RoutePickerMap
                             centerCoords={JSON.parse(this.props.storage.getItem("centerCoords"))}
-                            selectedRoutes={JSON.parse(this.props.storage.getItem("routesGeoJson"))}
+                            routesGeojson={this.routesGeojson}
                         />
                     </div>
                 </div>

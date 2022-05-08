@@ -11,6 +11,7 @@ export class ParametersFormRow extends Component {
                     <TextField
                         className="parameters-form-page__text-field"
                         id={ this.props.rowId }
+                        key={ this.props.rowKey }
                         error={this.props.wasBlurred[this.props.rowId]}
                         onBlur={ this.props.handlers.handleBlur.bind(this) }
                         onChange={ this.props.handlers.handleChange.bind(this) }

@@ -1,8 +1,8 @@
 import { Component, React } from "react";
 import {Alert, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import './CityPicker.css';
-import '../HeaderComponent/HeaderComponent.css';
-import { HeaderComponent } from "../HeaderComponent/HeaderComponent";
+import '../../Headers/HeaderStyles.css';
+import {HeaderWithBackAndNext} from "../../Headers/HeaderWithBackAndNext";
 
 
 export class CityPicker extends Component {
@@ -66,7 +66,7 @@ export class CityPicker extends Component {
     render() {
         return (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <HeaderComponent back="/" next={"/new-job/2"} nextIsDisabled={this.state.selectedCity === ""}/>
+                <HeaderWithBackAndNext back="/" next={"/new-job/2"} nextIsDisabled={this.state.selectedCity === ""}/>
                 <h3 style={ { marginBottom: 16, marginLeft: 16 } }>Choose the analyzed city: </h3>
                 { this.state.formIsInErrorState &&
                     <Alert style={ { marginBottom: 16, marginLeft: 16, width: 300 } } severity="error">
