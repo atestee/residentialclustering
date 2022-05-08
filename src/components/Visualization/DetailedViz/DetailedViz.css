@@ -39,5 +39,10 @@
 
 .detailed-viz__body__metrics-div {
     width: 40vw;
-    border-color: rgb(204, 204, 204);
+}
+
+.detailed-viz__body__metrics__histogram-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
