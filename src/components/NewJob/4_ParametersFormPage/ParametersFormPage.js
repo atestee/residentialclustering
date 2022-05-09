@@ -119,6 +119,7 @@ export class ParametersFormPage extends Component {
     handleStartJob() {
         let newJobData = {
             "jobName": this.props.storage.getItem("jobName"),
+            "centerCoords": this.props.storage.getItem("centerCoords"),
             "excludedGeography": this.props.storage.getItem("selectedCenter"),
             "minWalkingDistanceMeters": this.props.storage.getItem("minWalkingDistance"),
             "maxDrivingDistanceMeters": this.props.storage.getItem("maxDrivingDistance"),

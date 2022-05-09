@@ -9,10 +9,11 @@ import {
 export class HighLevelVizMap extends Component {
     clusterLayer = new L.FeatureGroup();
     jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
+    coords = JSON.parse(this.props.storage.getItem("jobData"))["parameters"]["centerCoords"];
 
     componentDidMount() {
         this.map = L.map("map", {
-            center: this.props.centerCoords,
+            center: this.coords,
             zoom: 13,
             layers: [
                 L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/{id}/{z}/{x}/{y}.png', {
