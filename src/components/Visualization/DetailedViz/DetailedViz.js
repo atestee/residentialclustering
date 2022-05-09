@@ -22,16 +22,17 @@ export class DetailedViz extends Component {
     colorGradientArrayFaded = getColorGradientArray(this.nbins, "#9ffdac", "#f6e891", "#f18080");
     pieChartColors = ["#a743ff", "#1680ff"]
 
-    pieChartData = [
-        {"name": "productiveAge", "value": 46.7},
-        {"name": "non-productiveAge", "value": 53.3}
-    ]
-
     jobData = JSON.parse(this.props.storage.getItem("jobData"))
     clusterIdx = this.props.storage.getItem("clusterIdx")
     clusterData = this.jobData["clusters"][this.clusterIdx]
     parameters = this.jobData["parameters"]
     clusterName = this.clusterData.geography.features[0].properties.name
+    productiveAgeDistribution = this.clusterData["demographicData"].filter((item) => (item.name === "productivityDistribution"))[0]
+
+    pieChartData = [
+        {"name": this.productiveAgeDistribution.keys[0], "value": this.productiveAgeDistribution.values[0]},
+        {"name": this.productiveAgeDistribution.keys[1], "value": this.productiveAgeDistribution.values[1]}
+    ]
 
     constructor(props) {
         super(props);
@@ -66,6 +67,10 @@ export class DetailedViz extends Component {
             "value": elem,
             "key": String((index * delta / 1000).toFixed(1)) + " - " + String(((index + 1) * delta / 1000).toFixed(1))
         }))
+    }
+
+    componentDidMount() {
+        console.log(this.productiveAgeDistribution)
     }
 
     showMap() {
