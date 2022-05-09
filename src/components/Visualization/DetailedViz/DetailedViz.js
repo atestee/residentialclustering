@@ -75,7 +75,6 @@ export class DetailedViz extends Component {
             case "heatMap":
                 return (
                     <Heatmap
-                        centerCoords={JSON.parse(this.props.storage.getItem("centerCoords"))}
                         setShownMap={this.setShownMap.bind(this)}
                         clusterPolygon={this.clusterData.geography}
                         includedResidentialBuildings={this.clusterData.includedResidentialBuildings}
@@ -90,7 +89,6 @@ export class DetailedViz extends Component {
             case "includedExcludedMap":
                return (
                    <IncludedExcludedMap
-                        centerCoords={JSON.parse(this.props.storage.getItem("centerCoords"))}
                         feedingTransitStops={this.clusterData.feedingTransitStops}
                         setShownMap={this.setShownMap.bind(this)}
                         clusterPolygon={this.clusterData.geography}
