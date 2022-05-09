@@ -79,6 +79,7 @@ export class DetailedViz extends Component {
                         setShownMap={this.setShownMap.bind(this)}
                         clusterPolygon={this.clusterData.geography}
                         includedResidentialBuildings={this.clusterData.includedResidentialBuildings}
+                        feedingTransitStops={this.clusterData.feedingTransitStops}
                         jobParameters={this.parameters}
                         colorGradientArray={this.colorGradientArray}
                         colorGradientArrayFaded={this.colorGradientArrayFaded}
@@ -90,6 +91,7 @@ export class DetailedViz extends Component {
                return (
                    <IncludedExcludedMap
                         centerCoords={JSON.parse(this.props.storage.getItem("centerCoords"))}
+                        feedingTransitStops={this.clusterData.feedingTransitStops}
                         setShownMap={this.setShownMap.bind(this)}
                         clusterPolygon={this.clusterData.geography}
                         includedResidentialBuildings={this.clusterData.includedResidentialBuildings}

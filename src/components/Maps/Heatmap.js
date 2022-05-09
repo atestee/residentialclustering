@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
-import {GeoJSON, MapContainer, TileLayer, ZoomControl} from 'react-leaflet'
+import {GeoJSON, MapContainer, TileLayer, ZoomControl, Marker} from 'react-leaflet'
 import Control from 'react-leaflet-custom-control'
 import "./Map.css";
 import "./Heatmap.css";
@@ -32,6 +32,11 @@ export class Heatmap extends Component {
     }
 
     render() {
+        let busIcon = L.icon({
+            iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Solid_blue.svg/1024px-Solid_blue.svg.png',
+            iconSize: [15, 15],
+        });
+
         return (
             <MapContainer bounds={[this.bounds["southWest"], this.bounds["northEast"]]}
                           boundsOptions={{ maxZoom: 18 }}
@@ -88,6 +93,11 @@ export class Heatmap extends Component {
                              }
                          }.bind(this)}
                 />
+                {
+                    this.props.feedingTransitStops.map((stop) => (
+                        <Marker key={stop.name} icon={busIcon} position={[stop.latitude, stop.longitude]}/>
+                    ))
+                }
             </MapContainer>
         )
     }
