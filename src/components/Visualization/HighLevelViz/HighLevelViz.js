@@ -37,10 +37,6 @@ export class HighLevelViz extends Component {
         }
     }
 
-    componentDidMount() {
-        console.log(this.jobData)
-    }
-
     handleChange(event){
         if (event.target.value !== "") {
             this.setState(() => ({

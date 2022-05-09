@@ -9,7 +9,7 @@ export function HighLevelVizLoader ({storage}) {
     let [jobData, setJobData] = useState(null);
 
     useEffect(() => {
-        if (!storage.hasOwnProperty("jobData")) {
+        if (!storage.hasOwnProperty("jobData") || (storage.hasOwnProperty("jobId") && storage.getItem("jobId") !== jobId)) {
             fetch("http://localhost:5000/api/finished-job/" + jobId)
                 .then((response) => {
                     if (response.ok) {
@@ -29,7 +29,7 @@ export function HighLevelVizLoader ({storage}) {
         } else {
             setJobData(JSON.parse(storage.getItem("jobData")));
         }
-    }, [jobId, setJobData, storage])
+    }, [jobId, storage])
 
     if (jobData) {
         return (<HighLevelViz storage={storage} jobData={jobData} navigate={navigate}/>);
