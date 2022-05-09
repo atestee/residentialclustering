@@ -72,14 +72,16 @@ export class HighLevelVizMap extends Component {
             this.clusterLayer.addLayer(clusterPolygon);
             this.clusterLayer.addLayer(clusterBuildings);
 
+            let busIcon = L.icon({
+                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Solid_blue.svg/1024px-Solid_blue.svg.png',
+                iconSize:     [15, 15],
+            });
+
             let clusterStops = res.feedingTransitStops.map((stop) => (
-                new L.CircleMarker(
+                new L.Marker(
                     [stop.latitude, stop.longitude],
                     {
-                        radius: 1,
-                        fillColor: "red",
-                        fillOpacity: 1,
-                        color: "red",
+                        icon: busIcon,
                         interactive: false
                     }
                 )
