@@ -194,9 +194,7 @@ export class HighLevelViz extends Component {
                                                          onMouseLeave={() => {
                                                              this.removeFocus()
                                                          }}
-                                                         onClick={ () => {
-                                                             this.showDetailedViz(index).bind(this)
-                                                         }}
+                                                         onClick={ () => {this.showDetailedViz(index).bind(this)}}
                                                     >
                                                         <div className="high-level-viz_metrics-div_label"
                                                              key={res.geography.features[0].properties.name + "-label"}
