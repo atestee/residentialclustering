@@ -20,7 +20,7 @@ export class Heatmap extends Component {
     }
 
     getStyle(feature) {
-        let idx = Math.floor(feature.properties.taxiRideDistanceMeters / (this.props.jobParameters.maxDrivingDistanceMeters / 7));
+        let idx = Math.floor(feature.properties.taxiRideDistanceMeters / (this.props.jobParameters.maxDrivingDistanceMeters / this.props.nbins));
         const color = this.props.colorGradientArray[idx];
         return ({
             radius: 3,
@@ -81,7 +81,7 @@ export class Heatmap extends Component {
                 <GeoJSON data={this.props.includedResidentialBuildings}
                          key={"buildings-geojson-" + this.props.focusedDistanceGroupIndex}
                          pointToLayer={function (feature, latlng) {
-                             const idx = Math.floor(feature.properties.taxiRideDistanceMeters / (this.props.jobParameters.maxDrivingDistanceMeters / 7));
+                             const idx = Math.floor(feature.properties.taxiRideDistanceMeters / (this.props.jobParameters.maxDrivingDistanceMeters / this.props.nbins));
                              if (this.props.focusedDistanceGroupIndex === null) {
                                  return L.circleMarker(latlng, this.getStyle(feature));
                              } else {

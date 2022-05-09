@@ -8,20 +8,18 @@ import {
     HeaderForDetailedVisualization
 } from "../../Headers/HeaderForDetailedVisualization";
 
-const N_BINS = 7;
-
 function getColorGradientArray(numberOfBins, startColor, middleColor, endColor) {
     const middle = Math.floor(numberOfBins/2)
     let arr1 = colorGradient.setGradient(startColor, middleColor).setMidpoint(middle).getArray();
     let arr2 = colorGradient.setGradient(middleColor, endColor).setMidpoint(numberOfBins - middle).getArray();
-
     return arr1.concat(arr2);
 }
 
 
 export class DetailedViz extends Component {
-    colorGradientArray = getColorGradientArray(N_BINS, "#00ff1a", "#ffd500", "#ff0000");
-    colorGradientArrayFaded = getColorGradientArray(N_BINS, "#9ffdac", "#f6e891", "#f18080");
+    nbins = JSON.parse(this.props.storage.getItem("jobData"))["parameters"]["nbins"]
+    colorGradientArray = getColorGradientArray(this.nbins, "#00ff1a", "#ffd500", "#ff0000");
+    colorGradientArrayFaded = getColorGradientArray(this.nbins, "#9ffdac", "#f6e891", "#f18080");
     pieChartColors = ["#a743ff", "#1680ff"]
 
     pieChartData = [
@@ -42,8 +40,8 @@ export class DetailedViz extends Component {
             metricsDrawerOpen: true,
             focusedDistanceGroupIndex: null,
         }
-        this.taxiRideDurationHist = JSON.parse(this.clusterData.histograms["taxiRideDurationMinutes"]);
-        let delta = (this.parameters.maxTaxiRideDurationMinutes / N_BINS);
+        this.taxiRideDurationHist = this.clusterData.histograms["taxiRideDurationMinutes"];
+        let delta = (this.parameters.maxTaxiRideDurationMinutes / this.nbins);
         this.taxiRideDurationHistData = this.taxiRideDurationHist.map((elem, index) => {
             const start = (index * delta);
             const end = (index + 1) * delta;
@@ -61,8 +59,8 @@ export class DetailedViz extends Component {
             })
         })
 
-        this.taxiRideDistanceHist = JSON.parse(this.clusterData.histograms["taxiRideDistanceMeters"]);
-        delta = this.parameters.maxDrivingDistanceMeters / N_BINS;
+        this.taxiRideDistanceHist = this.clusterData.histograms["taxiRideDistanceMeters"];
+        delta = this.parameters.maxDrivingDistanceMeters / this.nbins;
 
         this.taxiRideDistanceHistData = this.taxiRideDistanceHist.map((elem, index) => ({
             "value": elem,
@@ -84,6 +82,7 @@ export class DetailedViz extends Component {
                         colorGradientArrayFaded={this.colorGradientArrayFaded}
                         legendValuesArray={Object.values(this.taxiRideDistanceHistData.map((elem) => (elem.key)))}
                         focusedDistanceGroupIndex={this.state.focusedDistanceGroupIndex}
+                        nbins={this.nbins}
                     />
                 )
             case "includedExcludedMap":
@@ -94,6 +93,7 @@ export class DetailedViz extends Component {
                         clusterPolygon={this.clusterData.geography}
                         includedResidentialBuildings={this.clusterData.includedResidentialBuildings}
                         excludedResidentialBuildings={this.clusterData.excludedResidentialBuildings}
+                        nbins={this.nbins}
                    />
                )
             default:
