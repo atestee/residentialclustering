@@ -132,7 +132,7 @@ export class ParametersFormPage extends Component {
         // POST req: new-job
         postData('http://localhost:5000/api/new-job', newJobData)
             .then(data => {
-                console.log(data); // JSON data parsed by `data.json()` call
+                console.log(data);
             });
 
     }
