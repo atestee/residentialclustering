@@ -9,7 +9,7 @@ import {
 export class HighLevelVizMap extends Component {
     clusterLayer = new L.FeatureGroup();
     jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
-    coords = JSON.parse(this.props.storage.getItem("jobData"))["parameters"]["centerCoords"];
+    coords = JSON.parse(JSON.parse(this.props.storage.getItem("jobData"))["parameters"]["centerCoords"]);
 
     componentDidMount() {
         this.map = L.map("map", {
@@ -55,7 +55,8 @@ export class HighLevelVizMap extends Component {
             color : FOCUSED_COLOR_BUILDINGS,
             weight : 1,
             opacity : 1,
-            fillOpacity : 1
+            fillOpacity : 1,
+            interactive: false
         };
 
         //https://gis.stackexchange.com/questions/131944/leaflet-marker-mouseover-popup
