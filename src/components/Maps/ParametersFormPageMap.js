@@ -20,8 +20,6 @@ export class ParametersFormPageMap extends Component {
             preferCanvas: true
         });
 
-        console.log(Object.keys(this.props.storage))
-
         L.geoJSON(JSON.parse(this.props.storage.getItem("routesGeoJson")), {
             style: function(feature) {
                 return {color: feature.properties.color};
