@@ -133,7 +133,6 @@ export class HighLevelViz extends Component {
                     <div className="high-level-viz_map-div">
                         <HighLevelVizMap
                             storage={this.props.storage}
-                            centerCoords={ JSON.parse(this.props.storage.getItem("centerCoords")) }
                             handleChange={ this.handleChange.bind(this) }
                             showDetailedViz={ this.showDetailedViz.bind(this) }
                             analysisData={ this.props.analysisData }
