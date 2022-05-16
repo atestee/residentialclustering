@@ -10,7 +10,7 @@ export function HighLevelVizLoader ({storage}) {
 
     useEffect(() => {
         if (!storage.hasOwnProperty("jobData") || (storage.hasOwnProperty("jobId") && storage.getItem("jobId") !== jobId)) {
-            fetch("http://localhost:5000/api/finished-job/" + jobId)
+            fetch("http://localhost:5000/api/job/" + jobId)
                 .then((response) => {
                     if (response.ok) {
                         return response.json();

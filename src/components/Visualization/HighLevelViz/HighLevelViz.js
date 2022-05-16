@@ -165,86 +165,92 @@ export class HighLevelViz extends Component {
                                                  label="Reached area" {...A11yProps(2)} />
                                         </Tabs>
                                     </Box>
-                                    <TabPanel value={this.state.value} index={0}>
-                                        <div className="high-level-viz_metrics-div">
-                                            <div className="high-level-viz_metrics-div_label">Minimal walking
-                                                distance:
+                                    <div className="high-level-viz_metrics-tabpanel">
+                                        <TabPanel value={this.state.value} index={0} >
+                                            <div className="high-level-viz_metrics-div">
+                                                <div className="high-level-viz_metrics-div_label">Minimal walking
+                                                    distance:
+                                                </div>
+                                                <div className="high-level-viz_metrics-div_value">{this.parameters.minWalkingDistanceMeters} m</div>
+                                                <div className="high-level-viz_metrics-div_label">Maximal driving
+                                                    time:
+                                                </div>
+                                                <div className="high-level-viz_metrics-div_value">{this.parameters.maxTaxiRideDurationMinutes} minutes</div>
+                                                <div className="high-level-viz_metrics-div_label">Maximal driving
+                                                    distance:
+                                                </div>
+                                                <div className="high-level-viz_metrics-div_value">{this.parameters.maxDrivingDistanceMeters} m</div>
                                             </div>
-                                            <div className="high-level-viz_metrics-div_value">{this.parameters.minWalkingDistanceMeters} m</div>
-                                            <div className="high-level-viz_metrics-div_label">Maximal driving
-                                                time:
-                                            </div>
-                                            <div className="high-level-viz_metrics-div_value">{this.parameters.maxTaxiRideDurationMinutes} minutes</div>
-                                            <div className="high-level-viz_metrics-div_label">Maximal driving
-                                                distance:
-                                            </div>
-                                            <div className="high-level-viz_metrics-div_value">{this.parameters.maxDrivingDistanceMeters} m</div>
-                                        </div>
-                                    </TabPanel>
-                                    <TabPanel value={this.state.value} index={1}>
-                                        <div>
-                                            {
-                                                this.jobData.map((res, index) => (
-                                                    <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
-                                                         key={res.geography.features[0].properties.name + "-numberOfIncludedResidents"}
-                                                         onMouseEnter={() => {
-                                                             this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
-                                                         }}
-                                                         onMouseLeave={() => {
-                                                             this.removeFocus()
-                                                         }}
-                                                         onClick={ () => {this.showDetailedViz(index).bind(this)}}
-                                                    >
-                                                        <div className="high-level-viz_metrics-div_label"
-                                                             key={res.geography.features[0].properties.name + "-label"}
-                                                        >
-                                                            {res.geography.features[0].properties.name}
-                                                        </div>
-                                                        <div className="high-level-viz_metrics-div_value"
-                                                             key={res.geography.features[0].properties.name + "-value"}>
-                                                            {Math.round(res.metrics.numberOfIncludedResidents)} residents
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                    </TabPanel>
-                                    <TabPanel value={this.state.value} index={2}>
-                                        <div>
-                                            {
-                                                this.jobData.map((res, index) => (
-                                                    <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
-                                                         key={res.geography.features[0].properties.name + "-totalClusterArea"}
-                                                         onMouseEnter={() => {
-                                                             this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
-                                                         }}
-                                                         onMouseLeave={() => {
-                                                             this.removeFocus()
-                                                         }}
-                                                         onClick={ () => {
-                                                             this.props.showDetailedViz(index)
-                                                         }}
-                                                    >
-                                                        <div className="high-level-viz_metrics-div_label"
-                                                             key={res.geography.features[0].properties.name + "-label"}
+                                        </TabPanel>
+                                    </div>
+                                    <div className="high-level-viz_metrics-tabpanel">
+                                        <TabPanel value={this.state.value} index={1}>
+                                            <div>
+                                                {
+                                                    this.jobData.map((res, index) => (
+                                                        <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
+                                                             key={res.geography.features[0].properties.name + "-numberOfIncludedResidents"}
                                                              onMouseEnter={() => {
                                                                  this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
                                                              }}
                                                              onMouseLeave={() => {
                                                                  this.removeFocus()
                                                              }}
+                                                             onClick={ () => {this.showDetailedViz(index).bind(this)}}
                                                         >
-                                                            {res.geography.features[0].properties.name}
+                                                            <div className="high-level-viz_metrics-div_label"
+                                                                 key={res.geography.features[0].properties.name + "-label"}
+                                                            >
+                                                                {res.geography.features[0].properties.name}
+                                                            </div>
+                                                            <div className="high-level-viz_metrics-div_value"
+                                                                 key={res.geography.features[0].properties.name + "-value"}>
+                                                                {Math.round(res.metrics.numberOfIncludedResidents)} residents
+                                                            </div>
                                                         </div>
-                                                        <div className="high-level-viz_metrics-div_value"
-                                                             key={res.geography.features[0].properties.name + "-value"}>
-                                                            {(res.metrics.totalClusterArea / 1000000).toFixed(2).toLocaleString()} km<sup>2</sup>
+                                                    ))
+                                                }
+                                            </div>
+                                        </TabPanel>
+                                    </div>
+                                    <div className="high-level-viz_metrics-tabpanel">
+                                        <TabPanel value={this.state.value} index={2}>
+                                            <div>
+                                                {
+                                                    this.jobData.map((res, index) => (
+                                                        <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
+                                                             key={res.geography.features[0].properties.name + "-totalClusterArea"}
+                                                             onMouseEnter={() => {
+                                                                 this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
+                                                             }}
+                                                             onMouseLeave={() => {
+                                                                 this.removeFocus()
+                                                             }}
+                                                             onClick={ () => {
+                                                                 this.props.showDetailedViz(index)
+                                                             }}
+                                                        >
+                                                            <div className="high-level-viz_metrics-div_label"
+                                                                 key={res.geography.features[0].properties.name + "-label"}
+                                                                 onMouseEnter={() => {
+                                                                     this.putFocusOnCluster_OnlyOneCluster(res.geography.features[0].properties.name)
+                                                                 }}
+                                                                 onMouseLeave={() => {
+                                                                     this.removeFocus()
+                                                                 }}
+                                                            >
+                                                                {res.geography.features[0].properties.name}
+                                                            </div>
+                                                            <div className="high-level-viz_metrics-div_value"
+                                                                 key={res.geography.features[0].properties.name + "-value"}>
+                                                                {(res.metrics.totalClusterArea / 1000000).toFixed(2).toLocaleString()} km<sup>2</sup>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                ))
-                                            }
-                                        </div>
-                                    </TabPanel>
+                                                    ))
+                                                }
+                                            </div>
+                                        </TabPanel>
+                                    </div>
                                 </Box>
                             </div>
                         </div>

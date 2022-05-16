@@ -72,6 +72,11 @@
     font-weight: normal !important;
 }
 
+.high-level-viz_metrics-tabpanel {
+    overflow-y: auto !important;
+    max-height: 83vh !important;
+}
+
 .high-level-viz_metrics-div {
     display: flex;
     flex-direction: column;
