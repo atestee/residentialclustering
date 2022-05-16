@@ -187,7 +187,7 @@ export class HighLevelViz extends Component {
                                         <TabPanel value={this.state.value} index={1}>
                                             <div>
                                                 {
-                                                    this.jobData.map((res, index) => (
+                                                    this.jobData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
                                                         <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                              key={res.geography.features[0].properties.name + "-numberOfIncludedResidents"}
                                                              onMouseEnter={() => {
@@ -217,7 +217,7 @@ export class HighLevelViz extends Component {
                                         <TabPanel value={this.state.value} index={2}>
                                             <div>
                                                 {
-                                                    this.jobData.map((res, index) => (
+                                                    this.jobData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
                                                         <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                              key={res.geography.features[0].properties.name + "-totalClusterArea"}
                                                              onMouseEnter={() => {
