@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
-import {GeoJSON, MapContainer, TileLayer, ZoomControl, Marker} from 'react-leaflet'
+import {GeoJSON, MapContainer, TileLayer, ZoomControl, Marker, Tooltip} from 'react-leaflet'
 import Control from 'react-leaflet-custom-control'
 import "./Map.css";
 import "./Heatmap.css";
@@ -95,7 +95,14 @@ export class Heatmap extends Component {
                 />
                 {
                     this.props.feedingTransitStops.map((stop) => (
-                        <Marker key={stop.name} icon={busIcon} position={[stop.latitude, stop.longitude]}/>
+                        <Marker key={stop.name}
+                                icon={busIcon}
+                                position={[stop.latitude, stop.longitude]}
+                        >
+                            <Tooltip direction="top">
+                                {stop.name}
+                            </Tooltip>
+                        </Marker>
                     ))
                 }
             </MapContainer>

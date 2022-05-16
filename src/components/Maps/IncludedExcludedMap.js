@@ -1,6 +1,6 @@
 import { Component } from "react";
 import {FormControl, FormControlLabel, Radio, RadioGroup} from "@mui/material";
-import {GeoJSON, MapContainer, Marker, TileLayer, ZoomControl} from 'react-leaflet'
+import {GeoJSON, MapContainer, Marker, TileLayer, Tooltip, ZoomControl} from 'react-leaflet'
 import Control from 'react-leaflet-custom-control'
 import "./Map.css";
 import "./IncludedExcludedMap.css";
@@ -100,7 +100,11 @@ export class IncludedExcludedMap extends Component {
                 />
                 {
                     this.props.feedingTransitStops.map((stop) => (
-                        <Marker key={stop.name} icon={busIcon} position={[stop.latitude, stop.longitude]}/>
+                        <Marker key={stop.name} icon={busIcon} position={[stop.latitude, stop.longitude]}>
+                            <Tooltip direction="top">
+                                {stop.name}
+                            </Tooltip>
+                        </Marker>
                     ))
                 }
             </MapContainer>
