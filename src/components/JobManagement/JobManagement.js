@@ -34,7 +34,7 @@ export class JobManagement extends Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:5000/api/job-management")
+        fetch("http://localhost:5000/api/job-information")
             .then((response) => {
                 if (response.ok) {
                     return response.json();
