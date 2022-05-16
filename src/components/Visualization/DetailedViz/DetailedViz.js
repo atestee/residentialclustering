@@ -69,10 +69,6 @@ export class DetailedViz extends Component {
         }))
     }
 
-    componentDidMount() {
-        console.log(this.productiveAgeDistribution)
-    }
-
     showMap() {
         switch (this.state.shownMap) {
             case "heatMap":
