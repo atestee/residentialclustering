@@ -8,6 +8,7 @@ import { A11yProps } from "../../mui/A11yProps";
 import {HighLevelVizMap} from "../../Maps/HighLevelVizMap";
 import {HeaderForHighLevelVisualization} from "../../Headers/HeaderForHighLevelVisualization";
 import "./HighLevelViz.css";
+import {getRouteColor} from "../../getRouteColor";
 
 export const FOCUSED_COLOR_POLYGON = "#1976d2"
 export const UNFOCUSED_COLOR_POLYGON = "#76b0e8"
@@ -25,8 +26,7 @@ export class HighLevelViz extends Component {
     parameters = JSON.parse(this.props.storage.getItem("jobData"))["parameters"];
     routesLinestrings = this.jobData.map((cluster) => ({
         "geometry": cluster["routeGeometry"],
-        "name": cluster["routeName"],
-        "type": cluster["routeType"]
+        "color": getRouteColor(cluster["routeType"], cluster["routeName"])
     }))
 
     constructor(props) {
