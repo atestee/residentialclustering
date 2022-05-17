@@ -15,7 +15,6 @@ import {
     Dialog,
     DialogContent,
     DialogTitle, IconButton,
-    TableFooter,
     TablePagination
 } from "@mui/material";
 import {HeaderWithNewJob} from "../Headers/HeaderWithNewJob";
@@ -83,8 +82,8 @@ export class JobManagement extends Component {
                     <HeaderWithNewJob next="/new-job/1"/>
                     <div className="job-management__body">
                         <div className="job-management__body__table">
-                            <TableContainer component={Paper}>
-                                <Table>
+                            <TableContainer sx={{ maxHeight: "80vh" }} component={Paper} >
+                                <Table stickyHeader aria-label="sticky table">
                                     <TableHead>
                                         <TableRow key="table-row">
                                             <TableCell>Job name</TableCell>
@@ -122,28 +121,24 @@ export class JobManagement extends Component {
                                             </TableRow>
                                         )}
                                     </TableBody>
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TablePagination
-                                                rowsPerPageOptions={[5, 10, 20, { label: 'All', value: -1 }]}
-                                                colSpan={3}
-                                                count={this.state.jobs.length}
-                                                rowsPerPage={this.state.rowsPerPage}
-                                                page={this.state.page}
-                                                SelectProps={{
-                                                    inputProps: {
-                                                        'aria-label': 'rows per page',
-                                                    },
-                                                    native: true,
-                                                }}
-                                                onPageChange={this.handleChangePage.bind(this)}
-                                                onRowsPerPageChange={this.handleChangeRowsPerPage.bind(this)}
-                                                ActionsComponent={TablePaginationActions}
-                                            />
-                                        </TableRow>
-                                    </TableFooter>
                                 </Table>
                             </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 20, { label: 'All', value: -1 }]}
+                                // colSpan={3}
+                                count={this.state.jobs.length}
+                                rowsPerPage={this.state.rowsPerPage}
+                                page={this.state.page}
+                                SelectProps={{
+                                    inputProps: {
+                                        'aria-label': 'rows per page',
+                                    },
+                                    native: true,
+                                }}
+                                onPageChange={this.handleChangePage.bind(this)}
+                                onRowsPerPageChange={this.handleChangeRowsPerPage.bind(this)}
+                                ActionsComponent={TablePaginationActions}
+                            />
                         </div>
                         {this.state.detailsToggled &&
                             <Dialog
