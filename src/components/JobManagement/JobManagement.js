@@ -110,7 +110,7 @@ export class JobManagement extends Component {
                                                 <TableCell>{job.status}</TableCell>
                                                 <TableCell align="right">
                                                     <Button variant="outlined" style={{"marginRight": 8}} onClick={() => this.showDetails(job)}>Details</Button>
-                                                    <Button variant="outlined" component={RouterLink} to={"/jobs/" + job.jobId}>Show</Button>
+                                                    <Button disabled={job.status === "RUNNING"} variant="outlined" component={RouterLink} to={"/jobs/" + job.jobId}>Show</Button>
                                                 </TableCell>
                                             </TableRow>
 
@@ -120,25 +120,27 @@ export class JobManagement extends Component {
                                                 <TableCell colSpan={6} />
                                             </TableRow>
                                         )}
+                                        <TableRow key="table-pagination">
+                                            <TablePagination
+                                                rowsPerPageOptions={[5, 10, 20, { label: 'All', value: -1 }]}
+                                                // colSpan={3}
+                                                count={this.state.jobs.length}
+                                                rowsPerPage={this.state.rowsPerPage}
+                                                page={this.state.page}
+                                                SelectProps={{
+                                                    inputProps: {
+                                                        'aria-label': 'rows per page',
+                                                    },
+                                                    native: true,
+                                                }}
+                                                onPageChange={this.handleChangePage.bind(this)}
+                                                onRowsPerPageChange={this.handleChangeRowsPerPage.bind(this)}
+                                                ActionsComponent={TablePaginationActions}
+                                            />
+                                        </TableRow>
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 20, { label: 'All', value: -1 }]}
-                                // colSpan={3}
-                                count={this.state.jobs.length}
-                                rowsPerPage={this.state.rowsPerPage}
-                                page={this.state.page}
-                                SelectProps={{
-                                    inputProps: {
-                                        'aria-label': 'rows per page',
-                                    },
-                                    native: true,
-                                }}
-                                onPageChange={this.handleChangePage.bind(this)}
-                                onRowsPerPageChange={this.handleChangeRowsPerPage.bind(this)}
-                                ActionsComponent={TablePaginationActions}
-                            />
                         </div>
                         {this.state.detailsToggled &&
                             <Dialog
