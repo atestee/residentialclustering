@@ -17,6 +17,20 @@ export class IncludedExcludedMap extends Component {
     bounds = this.props.clusterPolygon["features"][0]["properties"]["bounds"]
     center = this.props.clusterPolygon["features"][0]["properties"]["center"]
 
+    routeGeojson = {
+        "type": "FeatureCollection",
+        "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "color": this.props.routeLinestring.color
+                },
+                "geometry": this.props.routeLinestring.geometry
+            }
+        ]
+    };
+
     includedResidentialBuildingsStyle = {
         radius: 2,
         fillColor: FOCUSED_COLOR_BUILDINGS,
@@ -87,6 +101,11 @@ export class IncludedExcludedMap extends Component {
                         </div>
                     </div>
                 </Control>
+                <GeoJSON data={this.routeGeojson} style={
+                    function(feature) {
+                        return {color: feature.properties.color}
+                    }
+                }/>
                 <GeoJSON data={ this.props.clusterPolygon }/>
                 <GeoJSON data={ this.props.includedResidentialBuildings }
                          pointToLayer={ function (feature, latlng) {

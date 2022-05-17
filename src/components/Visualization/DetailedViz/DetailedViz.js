@@ -7,6 +7,7 @@ import colorGradient from "javascript-color-gradient";
 import {
     HeaderForDetailedVisualization
 } from "../../Headers/HeaderForDetailedVisualization";
+import {getRouteColor} from "../../getRouteColor";
 
 function getColorGradientArray(numberOfBins, startColor, middleColor, endColor) {
     const middle = Math.floor(numberOfBins/2)
@@ -17,7 +18,7 @@ function getColorGradientArray(numberOfBins, startColor, middleColor, endColor) 
 
 
 export class DetailedViz extends Component {
-    nbins = JSON.parse(this.props.storage.getItem("jobData"))["parameters"]["nbins"]
+    nbins = JSON.parse(this.props.storage.getItem("jobData"))["nbins"]
     colorGradientArray = getColorGradientArray(this.nbins, "#00ff1a", "#ffd500", "#ff0000");
     colorGradientArrayFaded = getColorGradientArray(this.nbins, "#9ffdac", "#f6e891", "#f18080");
     pieChartColors = ["#a743ff", "#1680ff"]
@@ -67,6 +68,11 @@ export class DetailedViz extends Component {
             "value": elem,
             "key": String((index * delta / 1000).toFixed(1)) + " - " + String(((index + 1) * delta / 1000).toFixed(1))
         }))
+
+        this.routeLinestring = {
+            "geometry": this.clusterData["routeGeometry"],
+            "color": getRouteColor(this.clusterData["routeType"], this.clusterData["routeName"])
+        }
     }
 
     showMap() {
@@ -84,6 +90,7 @@ export class DetailedViz extends Component {
                         legendValuesArray={Object.values(this.taxiRideDistanceHistData.map((elem) => (elem.key)))}
                         focusedDistanceGroupIndex={this.state.focusedDistanceGroupIndex}
                         nbins={this.nbins}
+                        routeLinestring={this.routeLinestring}
                     />
                 )
             case "includedExcludedMap":
@@ -95,6 +102,7 @@ export class DetailedViz extends Component {
                         includedResidentialBuildings={this.clusterData.includedResidentialBuildings}
                         excludedResidentialBuildings={this.clusterData.excludedResidentialBuildings}
                         nbins={this.nbins}
+                        routeLinestring={this.routeLinestring}
                    />
                )
             default:
@@ -169,7 +177,7 @@ export class DetailedViz extends Component {
                             </div>
 
                             <div className="detailed-viz__body__metrics__histogram-div">
-                                <h4>Productive Age / Non-productive Age</h4>
+                                <h4>Productive Age / Non-productive Age (%)</h4>
                                 <PieChart width={300} height={175} data={this.pieChartData}>
                                     <Pie dataKey="value" data={this.pieChartData} fill="blue" isAnimationActive={false} label startAngle={90} endAngle={-270}>
                                         {this.pieChartData.map((elem, index) => (
