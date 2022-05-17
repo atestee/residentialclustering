@@ -32,6 +32,7 @@ export function HighLevelVizLoader ({storage}) {
     }, [jobId, storage])
 
     if (jobData) {
+        console.log(jobData)
         return (<HighLevelViz storage={storage} jobData={jobData} navigate={navigate}/>);
     } else {
         return (

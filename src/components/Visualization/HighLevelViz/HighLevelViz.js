@@ -12,7 +12,6 @@ import "./HighLevelViz.css";
 export const FOCUSED_COLOR_POLYGON = "#1976d2"
 export const UNFOCUSED_COLOR_POLYGON = "#76b0e8"
 export const FOCUSED_COLOR_BUILDINGS = "rgba(243,225,5,1)"
-// export const FOCUSED_COLOR_BUILDINGS = "rgb(77,208,215)"
 
 
 export class HighLevelViz extends Component {
@@ -22,10 +21,13 @@ export class HighLevelViz extends Component {
     clusterBuildings = {}
     clusterStops = new L.FeatureGroup()
     jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
-    // jobId = JSON.parse(this.props.storage.getItem("jobId"));
-    // jobData = this.props.storage.getItem("jobData");
     jobId = this.props.storage.getItem("jobId");
     parameters = JSON.parse(this.props.storage.getItem("jobData"))["parameters"];
+    routesLinestrings = this.jobData.map((cluster) => ({
+        "geometry": cluster["routeGeometry"],
+        "name": cluster["routeName"],
+        "type": cluster["routeType"]
+    }))
 
     constructor(props) {
         super(props);
@@ -135,13 +137,13 @@ export class HighLevelViz extends Component {
                             storage={this.props.storage}
                             handleChange={ this.handleChange.bind(this) }
                             showDetailedViz={ this.showDetailedViz.bind(this) }
-                            analysisData={ this.props.analysisData }
                             numberOfShownClusters={ this.state.numberOfShownClusters }
                             clusterPolygons={ this.clusterPolygons }
                             clusterBuildings={ this.clusterBuildings }
                             clusterStops={this.clusterStops}
                             putFocusOnCluster={ this.putFocusOnCluster_HighlightCluster }
                             removeFocus={this.removeFocus}
+                            routeLinestrings={this.routesLinestrings}
                         />
                     </div>
                     { this.state.metricsDrawerOpen &&
@@ -243,7 +245,7 @@ export class HighLevelViz extends Component {
                                                             </div>
                                                             <div className="high-level-viz_metrics-div_value"
                                                                  key={res.geography.features[0].properties.name + "-value"}>
-                                                                {(res.metrics.totalClusterArea / 1000000).toFixed(2).toLocaleString()} km<sup>2</sup>
+                                                                {(res.metrics.totalClusterAreaInMeters / 1000000).toFixed(2).toLocaleString()} km<sup>2</sup>
                                                             </div>
                                                         </div>
                                                     ))
