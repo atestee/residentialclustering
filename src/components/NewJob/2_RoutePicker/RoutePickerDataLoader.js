@@ -24,7 +24,11 @@ export class RoutePickerDataLoader extends Component {
                     availableRoutes: data["availablePublicTransportRoutes"],
                     centerCoords: data["centerCoords"]
                 })
-            });
+            })
+            .catch((error) => {
+                console.error("Error fetching data: " + error);
+            })
+        ;
     }
 
     render() {
