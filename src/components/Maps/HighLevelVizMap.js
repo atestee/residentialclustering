@@ -5,11 +5,18 @@ import {
     FOCUSED_COLOR_BUILDINGS,
     FOCUSED_COLOR_POLYGON,
 } from "../Visualization/HighLevelViz/HighLevelViz";
+import {getRouteColor} from "../getRouteColor";
 
 export class HighLevelVizMap extends Component {
     clusterLayer = new L.FeatureGroup();
     jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
-    coords = JSON.parse(JSON.parse(this.props.storage.getItem("jobData"))["parameters"]["centerCoords"]);
+    coords = JSON.parse(JSON.parse(this.props.storage.getItem("jobData"))["centerCoords"]);
+
+    routesGeojson = {
+        "type": "FeatureCollection",
+        "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+        "features": []
+    };
 
     componentDidMount() {
         this.map = L.map("map", {
@@ -43,6 +50,31 @@ export class HighLevelVizMap extends Component {
         document.getElementById("number_of_clusters_textfield").addEventListener("keyup", this.props.handleChange, false);
         document.getElementById("number_of_clusters_textfield").classList.add('high-level-viz_number-of-clusters-form_textfield')
         document.getElementById("number_of_clusters_label").classList.add('high-level-viz_number-of-clusters-form_label')
+
+        let routeNames = []
+
+        this.props.routeLinestrings.map((route) => {
+            if (!routeNames.includes(route.name)) {
+                routeNames.push(route.name)
+                this.routesGeojson.features.push(
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "color": getRouteColor(route.type, route.name)
+                        },
+                        "geometry": route.geometry
+                    }
+                )
+            }
+            return 0
+        })
+
+        this.routesGeoJsonLayer = new L.GeoJSON(this.routesGeojson, {
+            style: function(feature) {
+                return {color: feature.properties.color}
+            }
+        });
+        this.routesGeoJsonLayer.addTo(this.map)
 
         this.showClusters();
     }
