@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './RoutePicker.css'
 import {HeaderWithBackAndNext} from "../../Headers/HeaderWithBackAndNext";
 import {RoutePickerMap} from "../../Maps/RoutePickerMap";
+import {getRouteColor} from "../../getRouteColor";
 
 export class RoutePicker extends Component {
     routeTypesGrouped = this.props.routeTypesGrouped;
@@ -45,26 +46,6 @@ export class RoutePicker extends Component {
         this.props.storage.setItem("routesGeoJson", JSON.stringify(this.routesGeojson))
         this.props.storage.setItem("isCheck", JSON.stringify(this.state.isCheck))
         this.props.storage.setItem("isCheckAll", JSON.stringify(this.state.isCheckAll))
-    }
-
-    getColor(type, name) {
-        if (type === "metro") {
-            if (name === "A") {
-                return "#19B619"
-            } else if (name === "B") {
-                return "#dcda43"
-            } else if (name === "C") {
-                return "#FF0000"
-            }
-        } else {
-            if (type === "tram"){
-                return "#07b7e1"
-            } else if (type === "bus"){
-                return "#FF8000"
-            } else {
-                return "#C800FF"
-            }
-        }
     }
 
     handleSelectAllClick(routeTypeName) {
@@ -144,15 +125,15 @@ export class RoutePicker extends Component {
                         "properties": {
                             "route_name" : route,
                             "route_type" : routeType,
-                            "color" : this.getColor(routeType, route)
+                            "color" : getRouteColor(routeType, route)
                         },
-                        "geometry": this.props.availableRoutes[routeType][route]["geometry"]
+                        "geometry": this.props.availableRoutes[routeType][route]
                     }
                 )
             ))
         ))
 
-        console.log(this.routesGeojson)
+
     }
 
     render() {
