@@ -123,7 +123,6 @@ export class JobManagement extends Component {
                                         <TableRow key="table-pagination">
                                             <TablePagination
                                                 rowsPerPageOptions={[5, 10, 20, { label: 'All', value: -1 }]}
-                                                // colSpan={3}
                                                 count={this.state.jobs.length}
                                                 rowsPerPage={this.state.rowsPerPage}
                                                 page={this.state.page}
