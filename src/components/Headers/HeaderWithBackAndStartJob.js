@@ -12,7 +12,7 @@ export class HeaderWithBackAndStartJob extends Component {
                 </div>
                 <div className="header-component_buttons">
                     <Button component={RouterLink} to={this.props.back} className="header-component_buttons_back-button" variant="outlined">Back</Button>
-                    <Button disabled={this.props.nextIsDisabled} component={RouterLink} to={this.props.next} variant="outlined" onClick={this.props.handleStartJob}>Start Job</Button>
+                    <Button disabled={this.props.startJobButtonIsDisabled} component={RouterLink} to={this.props.next} variant="outlined" onClick={this.props.handleStartJob}>Start Job</Button>
                 </div>
             </div>
         )

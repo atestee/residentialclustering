@@ -17,6 +17,7 @@ export class ParametersFormPage extends Component {
     isCheck = JSON.parse(this.props.storage.isCheck)
     selectedTypes = Object.keys(this.isCheck).filter(type => this.isCheck[type].length > 0)
     inputData = null
+    numberOfInputs = 5 + this.selectedTypes.length;
 
     constructor(props) {
         super(props);
@@ -77,9 +78,14 @@ export class ParametersFormPage extends Component {
 
                 return {
                     wasBlurred: newWasBlurred,
-                    showValidationErrorMessage: Object.keys(newWasBlurred).includes(true)
+                    showValidationErrorMessage: Object.keys(newWasBlurred).includes(true),
+                    numberOfFilled: state.numberOfFilled + 1
                 };
             })
+        } else {
+            this.setState((state) => ({
+                numberOfFilled: state.numberOfFilled - 1
+            }))
         }
     }
 
@@ -149,7 +155,7 @@ export class ParametersFormPage extends Component {
 
         return (
             <div>
-                <HeaderWithBackAndStartJob back="/new-job/3" next="/new-job/4" startJobButton={true} nextIsDisabled={this.state.disableStartJobButton} handleStartJob={this.handleClickOnStartJob.bind(this)}/>
+                <HeaderWithBackAndStartJob back="/new-job/3" next="/new-job/4" startJobButton={true} startJobButtonIsDisabled={this.state.numberOfFilled !== this.numberOfInputs || this.state.showValidationErrorMessage} handleStartJob={this.handleClickOnStartJob.bind(this)}/>
                 <h3 className="parameters-form-page__instruction_header">Fill the form: </h3>
                 <div className="parameters-form-page">
                     <form>
