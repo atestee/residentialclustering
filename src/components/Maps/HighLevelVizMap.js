@@ -5,7 +5,6 @@ import {
     FOCUSED_COLOR_BUILDINGS,
     FOCUSED_COLOR_POLYGON,
 } from "../Visualization/HighLevelViz/HighLevelViz";
-import {getRouteColor} from "../getRouteColor";
 
 export class HighLevelVizMap extends Component {
     clusterLayer = new L.FeatureGroup();
@@ -60,7 +59,7 @@ export class HighLevelVizMap extends Component {
                     {
                         "type": "Feature",
                         "properties": {
-                            "color": getRouteColor(route.type, route.name)
+                            "color": route.color
                         },
                         "geometry": route.geometry
                     }
