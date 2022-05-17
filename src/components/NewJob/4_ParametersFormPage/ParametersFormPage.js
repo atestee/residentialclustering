@@ -1,9 +1,10 @@
 import {Component, React} from "react";
-import {Alert} from "@mui/material";
+import {Alert, CircularProgress} from "@mui/material";
 import {ParametersFormRow} from "./ParametersFormRow";
 import './ParametersFormPage.css';
 import {HeaderWithBackAndStartJob} from "../../Headers/HeaderWithBackAndStartJob";
 import {ParametersFormPageMap} from "../../Maps/ParametersFormPageMap";
+import {StartJobDialog} from "./StartJobDialog";
 
 const transitTypes = {
     "METRO": 1,
@@ -12,28 +13,10 @@ const transitTypes = {
     "FUNICULAR": 7
 }
 
-async function postData(url = '', data = {}) {
-    // Default options are marked with *
-    const response = await fetch(url, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-            'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-}
-
 export class ParametersFormPage extends Component {
     isCheck = JSON.parse(this.props.storage.isCheck)
     selectedTypes = Object.keys(this.isCheck).filter(type => this.isCheck[type].length > 0)
-    numberOfInputs = 5 + this.selectedTypes.length;
+    inputData = null
 
     constructor(props) {
         super(props);
@@ -52,8 +35,17 @@ export class ParametersFormPage extends Component {
             },
             numberOfFilled: 0,
             showValidationErrorMessage: false,
-            disableStartJobButton: false
+            disableStartJobButton: false,
+            showStartJobDialog: false,
+            proceedClicked: false
         }
+    }
+
+    setProceedClickedTrue() {
+        this.props.storage.clear();
+        this.setState(()=> ({
+            proceedClicked: true
+        }))
     }
 
     handleBlur(event) {
@@ -116,8 +108,8 @@ export class ParametersFormPage extends Component {
         });
     }
 
-    handleStartJob() {
-        let newJobData = {
+    handleClickOnStartJob() {
+        this.inputData = {
             "jobName": this.props.storage.getItem("jobName"),
             "centerCoords": this.props.storage.getItem("centerCoords"),
             "excludedGeography": this.props.storage.getItem("selectedCenter"),
@@ -126,18 +118,30 @@ export class ParametersFormPage extends Component {
             "maxTaxiRideDurationMinutes": this.props.storage.getItem("maxDrivingTime"),
             "nbins": this.props.storage.getItem("nbins"),
             "numberOfPTStopsClustering": this.getNumberOfStepsInCorridor(),
-            "includedRoutes": this.getIncludedRoutes()
+            "includedRoutes": this.getIncludedRoutes(),
+            "city": this.props.storage.getItem("selectedCity")
         }
+        this.setState(() => ({
+            showStartJobDialog: true
+        }))
+    }
 
-        // POST req: new-job
-        postData('http://localhost:5000/api/job', newJobData)
-            .then(data => {
-                console.log(data);
-            });
-
+    handleClose() {
+        console.log("close dialog")
+        this.setState({
+            showStartJobDialog: false
+        })
     }
 
     render() {
+        if (this.state.proceedClicked) {
+            return (
+                <div style={{ display: "flex", height: "100vh"}}>
+                    <CircularProgress size={100} style={{ margin: "auto" }}/>
+                </div>
+            )
+        }
+
         let handlers = {
             handleBlur: this.handleBlur.bind(this),
             handleChange: this.handleChange.bind(this)
@@ -145,7 +149,7 @@ export class ParametersFormPage extends Component {
 
         return (
             <div>
-                <HeaderWithBackAndStartJob back="/new-job/3" next="/new-job/4" startJobButton={true} nextIsDisabled={this.state.disableStartJobButton} handleStartJob={this.handleStartJob.bind(this)}/>
+                <HeaderWithBackAndStartJob back="/new-job/3" next="/new-job/4" startJobButton={true} nextIsDisabled={this.state.disableStartJobButton} handleStartJob={this.handleClickOnStartJob.bind(this)}/>
                 <h3 className="parameters-form-page__instruction_header">Fill the form: </h3>
                 <div className="parameters-form-page">
                     <form>
@@ -177,6 +181,14 @@ export class ParametersFormPage extends Component {
                             storage={this.props.storage}
                         />
                     </div>
+                    {this.state.showStartJobDialog &&
+                        <StartJobDialog
+                            handleClose={this.handleClose.bind(this)}
+                            showStartJobDialog={this.state.showStartJobDialog}
+                            setProceedClickedTrue={this.setProceedClickedTrue.bind(this)}
+                            inputData={this.inputData}
+                        />
+                    }
                 </div>
             </div>
         )
