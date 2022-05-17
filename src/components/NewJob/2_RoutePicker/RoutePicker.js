@@ -11,12 +11,13 @@ export class RoutePicker extends Component {
 
     constructor(props) {
         super(props);
-
         this.routesGeojson = this.props.storage.hasOwnProperty("routesGeoJson") ? JSON.parse(this.props.storage.routesGeoJson) : {
             "type": "FeatureCollection",
             "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
             "features": []
         };
+
+
 
         this.state = {
             isCheckAll: (this.props.storage.hasOwnProperty("isCheckAll")) ? JSON.parse(this.props.storage.isCheckAll) : {
@@ -145,16 +146,13 @@ export class RoutePicker extends Component {
                             "route_type" : routeType,
                             "color" : this.getColor(routeType, route)
                         },
-                        "geometry": {
-                            "type": "LineString",
-                            "coordinates": this.props.availableRoutes[routeType][route]
-                        }
+                        "geometry": this.props.availableRoutes[routeType][route]["geometry"]
                     }
                 )
             ))
         ))
 
-        console.log("routes geojson updated")
+        console.log(this.routesGeojson)
     }
 
     render() {
