@@ -4,7 +4,7 @@ import {
     Routes,
     Route,
 } from "react-router-dom";
-import {JobManagement} from "./components/JobManagement/JobManagement";
+import {JobOverview} from "./components/JobOverview/JobOverview";
 import {CityPicker} from "./components/NewJob/1_CityPicker/CityPicker";
 import {CenterPicker} from "./components/NewJob/3_CenterPicker/CenterPicker";
 import {ParametersFormPage} from "./components/NewJob/4_ParametersFormPage/ParametersFormPage";
@@ -24,7 +24,7 @@ export class App extends Component {
                         <Route path="/new-job/2" element={<RoutePickerDataLoader storage={this.myStorage} />} />
                         <Route path="/new-job/3" element={<CenterPicker storage={this.myStorage} />} />
                         <Route path="/new-job/4" element={<ParametersFormPage storage={this.myStorage} />} />
-                        <Route path="/" element={<JobManagement storage={this.myStorage} />} />
+                        <Route path="/" element={<JobOverview storage={this.myStorage} />} />
                         <Route path="/jobs/:jobId" element={<HighLevelVizLoader storage={this.myStorage}/>} />
                         <Route path="/jobs/:jobId/:clusterIdx" element={<DetailedViz storage={this.myStorage}/>} />
                     </Routes>

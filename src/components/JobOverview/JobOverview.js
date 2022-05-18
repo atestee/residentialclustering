@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CloseIcon from '@mui/icons-material/Close';
 import {Link as RouterLink} from "react-router-dom";
-import "./JobManagement.css";
+import "./JobOverview.css";
 import {
     Button,
     CircularProgress,
@@ -20,7 +20,7 @@ import {
 import {HeaderWithNewJob} from "../Headers/HeaderWithNewJob";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
-export class JobManagement extends Component {
+export class JobOverview extends Component {
     constructor(props) {
         super(props);
         this.state = {
