@@ -17,7 +17,6 @@ export class ParametersFormPage extends Component {
     isCheck = JSON.parse(this.props.storage.isCheck)
     selectedTypes = Object.keys(this.isCheck).filter(type => this.isCheck[type].length > 0)
     inputData = null
-    numberOfInputs = 5 + this.selectedTypes.length;
 
     constructor(props) {
         super(props);
@@ -34,9 +33,19 @@ export class ParametersFormPage extends Component {
                 'numberOfStepsInCorridorFunicular': false,
                 'nbins': false
             },
-            numberOfFilled: 0,
+            wasFilled: {
+                "jobName": false,
+                "minWalkingDistance": false,
+                "maxDrivingDistance": false,
+                "maxDrivingTime": false,
+                'numberOfStepsInCorridorMetro': !this.selectedTypes.includes("metro"),
+                'numberOfStepsInCorridorBus': !this.selectedTypes.includes("bus"),
+                'numberOfStepsInCorridorTram': !this.selectedTypes.includes("tram"),
+                'numberOfStepsInCorridorFunicular': !this.selectedTypes.includes("funicular"),
+                'nbins': false
+            },
             showValidationErrorMessage: false,
-            disableStartJobButton: false,
+            disableStartJobButton: true,
             showStartJobDialog: false,
             proceedClicked: false
         }
@@ -64,10 +73,14 @@ export class ParametersFormPage extends Component {
         }
     }
 
+
     handleChange(event) {
         if (event.target.value !== "") {
             this.setState((state) => {
                 let newWasBlurred = { ...state.wasBlurred }
+
+                let newWasFilled = { ...state.wasFilled}
+                newWasFilled[event.target.id] = true
 
                 if (event.target.id !== "jobName") {
                     newWasBlurred[event.target.id] = isNaN(event.target.value)
@@ -77,15 +90,12 @@ export class ParametersFormPage extends Component {
                 this.props.storage.setItem(event.target.id, event.target.value)
 
                 return {
+                    wasFilled: newWasFilled,
                     wasBlurred: newWasBlurred,
-                    showValidationErrorMessage: Object.keys(newWasBlurred).includes(true),
-                    numberOfFilled: state.numberOfFilled + 1
+                    showValidationErrorMessage: Object.values(newWasBlurred).includes(true),
+                    disableStartJobButton: Object.values(newWasFilled).includes(false) || Object.values(newWasBlurred).includes(true)
                 };
             })
-        } else {
-            this.setState((state) => ({
-                numberOfFilled: state.numberOfFilled - 1
-            }))
         }
     }
 
@@ -155,7 +165,7 @@ export class ParametersFormPage extends Component {
 
         return (
             <div>
-                <HeaderWithBackAndStartJob back="/new-job/3" next="/new-job/4" startJobButton={true} startJobButtonIsDisabled={this.state.numberOfFilled !== this.numberOfInputs || this.state.showValidationErrorMessage} handleStartJob={this.handleClickOnStartJob.bind(this)}/>
+                <HeaderWithBackAndStartJob back="/new-job/3" next="/new-job/4" startJobButton={true} startJobButtonIsDisabled={this.state.disableStartJobButton} handleStartJob={this.handleClickOnStartJob.bind(this)}/>
                 <h3 className="parameters-form-page__instruction_header">Fill the form: </h3>
                 <div className="parameters-form-page">
                     <form>
@@ -173,7 +183,7 @@ export class ParametersFormPage extends Component {
                                 this.selectedTypes.map((type) => (
                                     <ParametersFormRow
                                         label={ "Number of stops in corridor [" + type + "] *" }
-                                        rowId={ "numberOfStepsInCorridor-" + type }
+                                        rowId={ "numberOfStepsInCorridor" + type[0].toUpperCase() + type.slice(1) }
                                         handlers={ handlers }
                                         wasBlurred={ this.state.wasBlurred }
                                         key={ "numberOfStepsInCorridor-" + type }
