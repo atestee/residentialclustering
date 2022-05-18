@@ -20,19 +20,22 @@ import {
 import {HeaderWithNewJob} from "../Headers/HeaderWithNewJob";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
+// component for the Job Overview Page (also the main page)
+// path: '/'
 export class JobOverview extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            "jobs": null,
-            detailsToggled: false,
-            detailsParams: null,
-            page: 0,
-            rowsPerPage: 5
+            jobInformation: null, // job information data saved here after being fetched from the server
+            detailsToggled: false, // when true the details dialog will show up
+            detailsParams: null, // job numerical parameters, shown in the dialog
+            page: 0, // current shown page in the table pagination
+            rowsPerPage: 5 // current shown number of rows in the table pagination
         }
     }
 
     componentDidMount() {
+        // GET request for the job information data [{ job name, start time, end time, status, parameters }]
         fetch("http://localhost:5000/api/job-information")
             .then((response) => {
                 if (response.ok) {
@@ -41,18 +44,20 @@ export class JobOverview extends Component {
                 throw response;
             })
             .then((data) => {
-                this.setState({"jobs": data})
-                this.emptyRows = this.state.page > 0 ? Math.max(0, (1 + this.state.page) * this.state.rowsPerPage - data.length) : 0;
+                // setState causes the component to update its modified children
+                this.setState({jobInformation: data})
             })
             .catch((error) => {
                 console.error("Error fetching data: " + error);
             })
     }
 
+    // changing the page in the table pagination
     handleChangePage = (event, newPage) => {
         this.setState({page: newPage})
     };
 
+    // changing the number of rows in the table pagination
     handleChangeRowsPerPage(event) {
         this.setState({
             rowsPerPage: parseInt(event.target.value, 10),
@@ -60,27 +65,30 @@ export class JobOverview extends Component {
         })
     };
 
+    // after details button clicked, this causes the details dialog to open up
     showDetails(job) {
-        console.log(job.parameters.numberOfPTStopsClustering)
         this.setState({
             detailsToggled: true,
             detailsParams: job["parameters"]
         })
     }
 
-    handleClose() {
-        console.log("close details")
+    // closing the details dialog
+    handleDialogClose() {
         this.setState({
             detailsToggled: false
         })
     }
 
     render() {
-        if (this.state.jobs) {
+        // if the job information data was already loaded show the page, else show circular progress
+        if (this.state.jobInformation) {
             return (
                 <div>
+                    {/* Header component for this page */}
                     <HeaderWithNewJob next="/new-job/1"/>
                     <div className="job-management__body">
+                        {/* Job Information Table */}
                         <div className="job-management__body__table">
                             <TableContainer sx={{ maxHeight: "80vh" }} component={Paper} >
                                 <Table stickyHeader aria-label="sticky table">
@@ -95,8 +103,8 @@ export class JobOverview extends Component {
                                     </TableHead>
                                     <TableBody>
                                         {(this.state.rowsPerPage > 0
-                                                ? this.state.jobs.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                                                : this.state.jobs
+                                                ? this.state.jobInformation.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                                                : this.state.jobInformation
                                         ).map((job) => (
                                             <TableRow
                                                 key={job.jobId}
@@ -115,15 +123,10 @@ export class JobOverview extends Component {
                                             </TableRow>
 
                                         ))}
-                                        {this.emptyRows > 0 && (
-                                            <TableRow style={{ height: 53 * this.emptyRows }}>
-                                                <TableCell colSpan={6} />
-                                            </TableRow>
-                                        )}
                                         <TableRow key="table-pagination">
                                             <TablePagination
-                                                rowsPerPageOptions={[5, 10, 20, { label: 'All', value: -1 }]}
-                                                count={this.state.jobs.length}
+                                                rowsPerPageOptions={[1, 5, 10, 20, { label: 'All', value: -1 }]}
+                                                count={this.state.jobInformation.length}
                                                 rowsPerPage={this.state.rowsPerPage}
                                                 page={this.state.page}
                                                 SelectProps={{
@@ -141,10 +144,11 @@ export class JobOverview extends Component {
                                 </Table>
                             </TableContainer>
                         </div>
+                        {/* Details dialog */}
                         {this.state.detailsToggled &&
                             <Dialog
                                 open={this.state.detailsToggled}
-                                onClose={this.handleClose.bind(this)}
+                                onClose={this.handleDialogClose.bind(this)}
                                 aria-labelledby="alert-dialog-title"
                                 aria-describedby="alert-dialog-description"
                             >
@@ -152,7 +156,7 @@ export class JobOverview extends Component {
                                     Details
                                     <IconButton
                                         aria-label="close"
-                                        onClick={this.handleClose.bind(this)}
+                                        onClick={this.handleDialogClose.bind(this)}
                                         sx={{
                                             position: 'absolute',
                                             right: 8,
@@ -202,6 +206,7 @@ export class JobOverview extends Component {
             );
         } else {
             return (
+                // Circular progress
                 <div style={{ display: "flex", height: "100vh"}}>
                     <CircularProgress size={100} style={{ margin: "auto" }}/>
                 </div>
