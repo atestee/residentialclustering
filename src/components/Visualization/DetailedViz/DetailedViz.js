@@ -24,7 +24,6 @@ export class DetailedViz extends Component {
     pieChartColors = ["#a743ff", "#1680ff"]
 
     clusterIdx = this.props.storage.getItem("clusterIdx")
-    clusterIdx = this.props.storage.getItem("clusterIdx")
     clusterData = JSON.parse(this.props.storage.getItem("clusterData"))
     parameters = JSON.parse(this.props.storage.getItem("parameters"))
     clusterName = this.clusterData.geography.features[0].properties.name
