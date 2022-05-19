@@ -135,7 +135,7 @@ export class HighLevelViz extends Component {
     render() {
         return (
             <div className={"high-level-viz"}>
-                <HeaderForHighLevelVisualization back={"/"} handleClickOnMetricsButton={this.handleClickOnMetricsButton.bind(this)} jobName={this.clustersData["jobName"]}/>
+                <HeaderForHighLevelVisualization back={"/"} handleClickOnMetricsButton={this.handleClickOnMetricsButton.bind(this)} jobName={this.props.jobData["jobName"]}/>
                 <div className="high-level-viz_body">
                     <div className="high-level-viz_map-div">
                         <HighLevelVizMap
