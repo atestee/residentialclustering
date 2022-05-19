@@ -102,7 +102,7 @@ export class ParametersFormPage extends Component {
     getNumberOfStepsInCorridor(){
         return this.selectedTypes.map((type) => ({
             "transitType": transitTypes[type.toUpperCase()],
-            "numberOfStops": Number(this.props.storage["numberOfStepsInCorridor-" + type])
+            "numberOfStops": Number(this.props.storage["numberOfStepsInCorridor" + type[0].toUpperCase() + type.slice(1)])
         }))
     }
 
