@@ -8,8 +8,8 @@ import {
 
 export class HighLevelVizMap extends Component {
     clusterLayer = new L.FeatureGroup();
-    jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
-    coords = JSON.parse(JSON.parse(this.props.storage.getItem("jobData"))["centerCoords"]);
+    clustersData = this.props.jobData.clusters
+    coords = JSON.parse(this.props.jobData["centerCoords"])
 
     routesGeojson = {
         "type": "FeatureCollection",
@@ -18,6 +18,7 @@ export class HighLevelVizMap extends Component {
     };
 
     componentDidMount() {
+        console.log(this.coords)
         this.map = L.map("map", {
             center: this.coords,
             zoom: 13,
@@ -91,7 +92,7 @@ export class HighLevelVizMap extends Component {
         };
 
         //https://gis.stackexchange.com/questions/131944/leaflet-marker-mouseover-popup
-        this.jobData.slice(0, this.props.numberOfShownClusters).map((res, index) => {
+        this.clustersData.slice(0, this.props.numberOfShownClusters).map((res, index) => {
             let clusterPolygon = new L.GeoJSON(res.geography, {
                 onEachFeature: this.onEachFeatureWithIndex(index).bind(this)
             })

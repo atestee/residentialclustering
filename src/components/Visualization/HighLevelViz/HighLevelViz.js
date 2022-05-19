@@ -3,8 +3,8 @@ import L from "leaflet";
 
 import './HighLevelViz.css'
 import { Tab, Tabs, Box } from "@mui/material";
-import { TabPanel } from "../../mui/TabPanel";
-import { A11yProps } from "../../mui/A11yProps";
+import { TabPanel } from "../../MaterialUI/TabPanel";
+import { A11yProps } from "../../MaterialUI/A11yProps";
 import {HighLevelVizMap} from "../../Maps/HighLevelVizMap";
 import {HeaderForHighLevelVisualization} from "../../Headers/HeaderForHighLevelVisualization";
 import "./HighLevelViz.css";
@@ -17,14 +17,13 @@ export const FOCUSED_COLOR_BUILDINGS = "rgba(243,225,5,1)"
 
 export class HighLevelViz extends Component {
     map = null
-    clusterLayer = new L.FeatureGroup()
     clusterPolygons = {}
     clusterBuildings = {}
     clusterStops = new L.FeatureGroup()
-    jobData = JSON.parse(this.props.storage.getItem("jobData"))["clusters"];
-    jobId = this.props.storage.getItem("jobId");
-    parameters = JSON.parse(this.props.storage.getItem("jobData"))["parameters"];
-    routesLinestrings = this.jobData.map((cluster) => ({
+    clustersData = this.props.jobData.clusters
+    jobId = this.props.jobData.jobId
+    parameters = this.props.jobData.parameters
+    routesLinestrings = this.clustersData.map((cluster) => ({
         "geometry": cluster["routeGeometry"],
         "color": getRouteColor(cluster["routeType"], cluster["routeName"])
     }))
@@ -33,7 +32,7 @@ export class HighLevelViz extends Component {
         super(props);
         this.state = {
             redirect: null,
-            numberOfShownClusters: this.jobData.length,
+            numberOfShownClusters: this.clustersData.length,
             value: 0,
             metricsDrawerOpen: false,
         }
@@ -124,17 +123,24 @@ export class HighLevelViz extends Component {
 
     showDetailedViz(clusterIdx) {
         this.props.storage.setItem("clusterIdx", clusterIdx)
+        this.props.storage.setItem("clusterData", JSON.stringify(this.clustersData[clusterIdx]))
+        this.props.storage.setItem("nbins", JSON.stringify(this.props.jobData["nbins"]))
+        this.props.storage.setItem("parameters", JSON.stringify(this.props.jobData["parameters"]))
+        this.props.storage.setItem("centerCoords", JSON.stringify(this.props.jobData["centerCoords"]))
+
+
         this.props.navigate("/jobs/" + this.props.storage.getItem("jobId") + "/" + clusterIdx)
     }
 
     render() {
         return (
             <div className={"high-level-viz"}>
-                <HeaderForHighLevelVisualization back={"/"} handleClickOnMetricsButton={this.handleClickOnMetricsButton.bind(this)}/>
+                <HeaderForHighLevelVisualization back={"/"} handleClickOnMetricsButton={this.handleClickOnMetricsButton.bind(this)} jobName={this.clustersData["jobName"]}/>
                 <div className="high-level-viz_body">
                     <div className="high-level-viz_map-div">
                         <HighLevelVizMap
                             storage={this.props.storage}
+                            jobData={this.props.jobData}
                             handleChange={ this.handleChange.bind(this) }
                             showDetailedViz={ this.showDetailedViz.bind(this) }
                             numberOfShownClusters={ this.state.numberOfShownClusters }
@@ -189,7 +195,7 @@ export class HighLevelViz extends Component {
                                         <TabPanel value={this.state.value} index={1}>
                                             <div>
                                                 {
-                                                    this.jobData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
+                                                    this.clustersData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
                                                         <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                              key={res.geography.features[0].properties.name + "-numberOfIncludedResidents"}
                                                              onMouseEnter={() => {
@@ -219,7 +225,7 @@ export class HighLevelViz extends Component {
                                         <TabPanel value={this.state.value} index={2}>
                                             <div>
                                                 {
-                                                    this.jobData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
+                                                    this.clustersData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
                                                         <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                              key={res.geography.features[0].properties.name + "-totalClusterArea"}
                                                              onMouseEnter={() => {

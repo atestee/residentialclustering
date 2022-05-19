@@ -9,30 +9,24 @@ export function HighLevelVizLoader ({storage}) {
     let [jobData, setJobData] = useState(null);
 
     useEffect(() => {
-        if (!storage.hasOwnProperty("jobData") || (storage.hasOwnProperty("jobId") && storage.getItem("jobId") !== jobId)) {
-            fetch("http://localhost:5000/api/job/" + jobId)
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw response;
+        fetch("http://localhost:5000/api/job/" + jobId)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
 
-                })
-                .then((data) => {
-                    storage.setItem("jobId", jobId);
-                    storage.setItem("jobData", JSON.stringify(data))
-                    setJobData(data);
-                })
-                .catch((error) => {
-                    console.error("Error fetching data: " + error);
-                })
-        } else {
-            setJobData(JSON.parse(storage.getItem("jobData")));
-        }
-    }, [jobId, storage])
+            })
+            .then((data) => {
+                storage.setItem("jobId", jobId)
+                setJobData(data);
+            })
+            .catch((error) => {
+                console.error("Error fetching data: " + error);
+            })
+    }, [jobId, jobData, storage])
 
     if (jobData) {
-        console.log(jobData)
         return (<HighLevelViz storage={storage} jobData={jobData} navigate={navigate}/>);
     } else {
         return (

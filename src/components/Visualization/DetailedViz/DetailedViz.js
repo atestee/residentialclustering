@@ -18,15 +18,15 @@ function getColorGradientArray(numberOfBins, startColor, middleColor, endColor) 
 
 
 export class DetailedViz extends Component {
-    nbins = JSON.parse(this.props.storage.getItem("jobData"))["nbins"]
+    nbins = JSON.parse(this.props.storage.getItem("nbins"))
     colorGradientArray = getColorGradientArray(this.nbins, "#00ff1a", "#ffd500", "#ff0000");
     colorGradientArrayFaded = getColorGradientArray(this.nbins, "#9ffdac", "#f6e891", "#f18080");
     pieChartColors = ["#a743ff", "#1680ff"]
 
-    jobData = JSON.parse(this.props.storage.getItem("jobData"))
     clusterIdx = this.props.storage.getItem("clusterIdx")
-    clusterData = this.jobData["clusters"][this.clusterIdx]
-    parameters = this.jobData["parameters"]
+    clusterIdx = this.props.storage.getItem("clusterIdx")
+    clusterData = JSON.parse(this.props.storage.getItem("clusterData"))
+    parameters = JSON.parse(this.props.storage.getItem("parameters"))
     clusterName = this.clusterData.geography.features[0].properties.name
     productiveAgeDistribution = this.clusterData["demographicData"].filter((item) => (item.name === "productivityDistribution"))[0]
 
@@ -39,7 +39,7 @@ export class DetailedViz extends Component {
         super(props);
         this.state = {
             shownMap: "heatMap",
-            metricsDrawerOpen: true,
+            metricsDrawerOpen: false,
             focusedDistanceGroupIndex: null,
         }
         this.taxiRideDurationHist = this.clusterData.histograms["taxiRideDurationMinutes"];
