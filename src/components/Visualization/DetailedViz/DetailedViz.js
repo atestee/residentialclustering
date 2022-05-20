@@ -30,8 +30,8 @@ export class DetailedViz extends Component {
     productiveAgeDistribution = this.clusterData["demographicData"].filter((item) => (item.name === "productivityDistribution"))[0]
 
     pieChartData = [
-        {"name": this.productiveAgeDistribution.keys[0], "value": this.productiveAgeDistribution.values[0]},
-        {"name": this.productiveAgeDistribution.keys[1], "value": this.productiveAgeDistribution.values[1]}
+        {"name": this.productiveAgeDistribution.keys[0], "value": parseInt(this.productiveAgeDistribution.values[0].toFixed(2))},
+        {"name": this.productiveAgeDistribution.keys[1], "value": parseInt(this.productiveAgeDistribution.values[1].toFixed(2))}
     ]
 
     constructor(props) {
