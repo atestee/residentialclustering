@@ -83,7 +83,7 @@ export class ParametersFormPage extends Component {
                 newWasFilled[event.target.id] = true
 
                 if (event.target.id !== "jobName") {
-                    newWasBlurred[event.target.id] = isNaN(event.target.value)
+                    newWasBlurred[event.target.id] = isNaN(event.target.value) || event.target.value <= 0
                 } else {
                     newWasBlurred[event.target.id] = false
                 }
