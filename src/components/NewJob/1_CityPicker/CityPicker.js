@@ -4,7 +4,7 @@ import './CityPicker.css';
 import '../../Headers/HeaderStyles.css';
 import {HeaderWithBackAndNext} from "../../Headers/HeaderWithBackAndNext";
 
-
+// The city picker page implementation
 export class CityPicker extends Component {
     constructor(props) {
         super(props);
@@ -15,9 +15,9 @@ export class CityPicker extends Component {
         }
     }
 
-    // get list of offered cities
     componentDidMount() {
-        // get the list of available cities from server
+        // Fetching the list of available cities from server
+        // GET /api/cities
         fetch("http://localhost:5000/api/cities/")
             .then((response) => {
                 if (response.ok) {
@@ -27,6 +27,7 @@ export class CityPicker extends Component {
 
             })
             .then((data) => {
+                // Selected city is stored in the local storage until the job is started
                 let selectedCity = '';
                 if (this.props.storage.hasOwnProperty("selectedCity")){
                     selectedCity = this.props.storage.getItem("selectedCity");
@@ -43,24 +44,21 @@ export class CityPicker extends Component {
     }
 
     handleChange(event){
-        // check if the city was selected, if not set error to true and show the error message
+        // Checking if the city was selected, if not set error to true and show the alert with error message
         this.setState((state) => ({
             selectedCity: event.target.value,
             formIsInErrorState: state.selectedCity === ""
         }))
 
-        // save the selected city into local storage
+        // Saving the selected city into local storage
         this.props.storage.setItem("selectedCity", event.target.value)
     }
 
     handleClose(){
-        // check if the city was selected, if not set error to true and show the error message
+        // Checking if the city was selected, if not set error to true and show the alert with error message
         this.setState((state) => ({
             formIsInErrorState: state.selectedCity === ""
         }))
-
-        // save the selected city into local storage
-        // this.props.storage.setItem("selectedCity", event.target.value)
     }
 
     render() {

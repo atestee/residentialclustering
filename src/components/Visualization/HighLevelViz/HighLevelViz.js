@@ -14,7 +14,7 @@ export const FOCUSED_COLOR_POLYGON = "#1976d2"
 export const UNFOCUSED_COLOR_POLYGON = "#76b0e8"
 export const FOCUSED_COLOR_BUILDINGS = "rgba(243,225,5,1)"
 
-
+// The high-level visualization implementation
 export class HighLevelViz extends Component {
     map = null
     clusterPolygons = {}
@@ -23,6 +23,7 @@ export class HighLevelViz extends Component {
     clustersData = this.props.jobData.clusters
     jobId = this.props.jobData.jobId
     parameters = this.props.jobData.parameters
+    // The geometry and color data for visualizing the route corresponding the calculated clusters
     routesLinestrings = this.clustersData.map((cluster) => ({
         "geometry": cluster["routeGeometry"],
         "color": getRouteColor(cluster["routeType"], cluster["routeName"])
@@ -37,8 +38,8 @@ export class HighLevelViz extends Component {
             metricsDrawerOpen: false,
         }
     }
-
-    handleChange(event){
+    // Handle change in the text input controlling how many clusters are shown
+    handleNumberOfClustersChange(event){
         if (event.target.value !== "") {
             this.setState(() => ({
                 numberOfShownClusters: event.target.value
@@ -58,7 +59,7 @@ export class HighLevelViz extends Component {
         }))
     }
 
-    // only shows the focused cluster, others invisible
+    // Showing only the focused cluster, others invisible
     putFocusOnCluster_OnlyOneCluster(clusterName) {
         // make other clusters invisible
         Object.keys(this.clusterPolygons).map((key) => {
@@ -76,7 +77,7 @@ export class HighLevelViz extends Component {
         })
     }
 
-    // show focused cluster with more saturated color
+    // Showing the focused cluster with a more saturated color
     putFocusOnCluster_HighlightCluster(clusterName) {
         let polygon = this.clusterPolygons[clusterName];
         let buildings = this.clusterBuildings[clusterName];
@@ -99,9 +100,8 @@ export class HighLevelViz extends Component {
             return key
         })
     }
-
+    // Make all clusters visible and set their color to the focused one
     removeFocus() {
-        // make all clusters visible and set their color to the focused one
         Object.values(this.clusterPolygons).map((polygon) => (
             polygon.setStyle({
                 color: FOCUSED_COLOR_POLYGON,
@@ -128,7 +128,6 @@ export class HighLevelViz extends Component {
         this.props.storage.setItem("parameters", JSON.stringify(this.props.jobData["parameters"]))
         this.props.storage.setItem("centerCoords", JSON.stringify(this.props.jobData["centerCoords"]))
 
-
         this.props.navigate("/jobs/" + this.props.storage.getItem("jobId") + "/" + clusterIdx)
     }
 
@@ -141,7 +140,7 @@ export class HighLevelViz extends Component {
                         <HighLevelVizMap
                             storage={this.props.storage}
                             jobData={this.props.jobData}
-                            handleChange={ this.handleChange.bind(this) }
+                            handleChange={ this.handleNumberOfClustersChange.bind(this) }
                             showDetailedViz={ this.showDetailedViz.bind(this) }
                             numberOfShownClusters={ this.state.numberOfShownClusters }
                             clusterPolygons={ this.clusterPolygons }
@@ -195,6 +194,7 @@ export class HighLevelViz extends Component {
                                         <TabPanel value={this.state.value} index={1}>
                                             <div>
                                                 {
+                                                    // Only show the data for the chosen number of clusters
                                                     this.clustersData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
                                                         <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                              key={res.geography.features[0].properties.name + "-numberOfIncludedResidents"}
@@ -225,6 +225,7 @@ export class HighLevelViz extends Component {
                                         <TabPanel value={this.state.value} index={2}>
                                             <div>
                                                 {
+                                                    // Only show the data for the chosen number of clusters
                                                     this.clustersData.slice(0, this.state.numberOfShownClusters).map((res, index) => (
                                                         <div className="high-level-viz_metrics-div high-level-viz_metrics-div__clickable"
                                                              key={res.geography.features[0].properties.name + "-totalClusterArea"}

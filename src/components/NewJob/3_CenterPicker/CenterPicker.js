@@ -3,6 +3,7 @@ import "./CenterPicker.css";
 import { DrawingMap } from "../../Maps/DrawingMap";
 import {HeaderWithBackAndNext} from "../../Headers/HeaderWithBackAndNext";
 
+// The city center picker page implementation
 export class CenterPicker extends Component {
     render() {
         return (

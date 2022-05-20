@@ -5,6 +5,7 @@ import L from "leaflet";
 
 export class ParametersFormPageMap extends Component {
     componentDidMount() {
+        // The map component initialization
         this.map = L.map("map", {
             center: JSON.parse(this.props.storage.getItem("centerCoords")),
             zoom: 13,
@@ -20,12 +21,14 @@ export class ParametersFormPageMap extends Component {
             preferCanvas: true
         });
 
+        // Loading the previously selected routes' GeoJSON data
         L.geoJSON(JSON.parse(this.props.storage.getItem("routesGeoJson")), {
             style: function(feature) {
                 return {color: feature.properties.color};
             }
         }).addTo(this.map);
 
+        // Loading the previously selected city center GeoJSON data
         if (this.props.storage.hasOwnProperty("selectedCenter")) {
             L.geoJSON(JSON.parse(this.props.storage.getItem("selectedCenter"))).addTo(this.map);
         }

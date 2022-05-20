@@ -2,6 +2,10 @@ import {Component} from "react";
 import {CircularProgress} from "@mui/material";
 import {RoutePicker} from "./RoutePicker";
 
+// A wrapper component for the route picker component
+// Fetches city model data from the server
+// Before the data is loaded, a circular progress is rendered
+// After the data is loaded, the route picker page is rendered
 export class RoutePickerDataLoader extends Component {
     routeTypesGrouped = {};
 
@@ -14,11 +18,20 @@ export class RoutePickerDataLoader extends Component {
     }
 
     componentDidMount() {
-        // get all the data of the selected city (cityModel) = coords, public transport routes
+        // Fetching the city model data of the selected city = [ coords, public transport routes ]
+        // GET /api/city-model/<selected-city>
         fetch('http://localhost:5000/api/city-model/' + this.props.storage.selectedCity)
-            .then(response => response.json())
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+
+            })
             .then(data => {
+                // Grouping the route types together, each type contains an array of route names, for example: 'metro' : ['A', 'B', 'C']
                 Object.keys(data["availablePublicTransportRoutes"]).map((t) => (this.routeTypesGrouped)[t] = Object.keys(data["availablePublicTransportRoutes"][t]))
+                // Storing the center coordinates of the selected city into the local storage
                 this.props.storage.setItem("centerCoords", JSON.stringify(data["centerCoords"]))
                 this.setState({
                     availableRoutes: data["availablePublicTransportRoutes"],

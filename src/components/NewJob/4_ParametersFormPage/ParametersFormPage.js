@@ -6,6 +6,7 @@ import {HeaderWithBackAndStartJob} from "../../Headers/HeaderWithBackAndStartJob
 import {ParametersFormPageMap} from "../../Maps/ParametersFormPageMap";
 import {StartJobDialog} from "./StartJobDialog";
 
+// The ID of transit type according to the GTFS specification
 const transitTypes = {
     "METRO": 1,
     "TRAM": 0,
@@ -13,15 +14,18 @@ const transitTypes = {
     "FUNICULAR": 7
 }
 
+// The parameters form page implementation
 export class ParametersFormPage extends Component {
     isCheck = JSON.parse(this.props.storage.isCheck)
+    // From which transit types at least one route was selected
     selectedTypes = Object.keys(this.isCheck).filter(type => this.isCheck[type].length > 0)
-    inputData = null
+    analysisData = null
 
     constructor(props) {
         super(props);
 
         this.state = {
+            // Which text input was blurred with empty input
             wasBlurred: {
                 "jobName": false,
                 "minWalkingDistance": false,
@@ -33,6 +37,7 @@ export class ParametersFormPage extends Component {
                 'numberOfStepsInCorridorFunicular': false,
                 'nbins': false
             },
+            // Which text input was fill in the correct format
             wasFilled: {
                 "jobName": false,
                 "minWalkingDistance": false,
@@ -83,6 +88,7 @@ export class ParametersFormPage extends Component {
                 newWasFilled[event.target.id] = true
 
                 if (event.target.id !== "jobName") {
+                    // All text inputs, except "job name" must be a positive number
                     newWasBlurred[event.target.id] = isNaN(event.target.value) || event.target.value <= 0
                 } else {
                     newWasBlurred[event.target.id] = false
@@ -98,14 +104,14 @@ export class ParametersFormPage extends Component {
             })
         }
     }
-
+    // Returns the numberOfStepsInCorridor analysis parameter in the correct format
     getNumberOfStepsInCorridor(){
         return this.selectedTypes.map((type) => ({
             "transitType": transitTypes[type.toUpperCase()],
             "numberOfStops": Number(this.props.storage["numberOfStepsInCorridor" + type[0].toUpperCase() + type.slice(1)])
         }))
     }
-
+    // Returns the includedRoutes analysis parameter in the correct format
     getIncludedRoutes() {
         return this.selectedTypes.map((type) => {
             let isCheckAll = JSON.parse(this.props.storage.getItem("isCheckAll"))[type];
@@ -124,8 +130,9 @@ export class ParametersFormPage extends Component {
         });
     }
 
+    // Prepares the analysis input data and shows the dialog
     handleClickOnStartJob() {
-        this.inputData = {
+        this.analysisData = {
             "jobName": this.props.storage.getItem("jobName"),
             "centerCoords": this.props.storage.getItem("centerCoords"),
             "excludedGeography": this.props.storage.getItem("selectedCenter"),
@@ -142,8 +149,7 @@ export class ParametersFormPage extends Component {
         }))
     }
 
-    handleClose() {
-        console.log("close dialog")
+    handleDialogClose() {
         this.setState({
             showStartJobDialog: false
         })
@@ -199,10 +205,10 @@ export class ParametersFormPage extends Component {
                     </div>
                     {this.state.showStartJobDialog &&
                         <StartJobDialog
-                            handleClose={this.handleClose.bind(this)}
+                            handleClose={this.handleDialogClose.bind(this)}
                             showStartJobDialog={this.state.showStartJobDialog}
                             setProceedClickedTrue={this.setProceedClickedTrue.bind(this)}
-                            inputData={this.inputData}
+                            inputData={this.analysisData}
                         />
                     }
                 </div>

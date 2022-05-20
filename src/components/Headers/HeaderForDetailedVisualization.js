@@ -5,11 +5,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars} from "@fortawesome/free-solid-svg-icons";
 import {useNavigate} from "react-router-dom";
 
-
+// The header component for the detailed visualization page
 export function HeaderForDetailedVisualization({storage, clusterName, handleClickOnMetricsButton}) {
     let navigate = useNavigate();
 
     function handleClickOnBack() {
+        // when the "back" button is clicked, user is navigated to the high-level visualization
         navigate("/jobs/" + storage.getItem("jobId"))
     }
 

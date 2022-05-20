@@ -25,7 +25,9 @@ export function StartJobDialog({handleClose, showStartJobDialog, inputData, setP
     let navigate = useNavigate();
 
     function handleClickOnProceed() {
-        setProceedClickedTrue()
+        setProceedClickedTrue();
+        // Sending a request to start a new analysis
+        // POST /api/job
         postData('http://localhost:5000/api/job', inputData)
             .then((response) => {
                 if (response.jobId) {

@@ -6,12 +6,15 @@ import {HeaderWithBackAndNext} from "../../Headers/HeaderWithBackAndNext";
 import {RoutePickerMap} from "../../Maps/RoutePickerMap";
 import {getRouteColor} from "../../getRouteColor";
 
+// The route picker page implementation
 export class RoutePicker extends Component {
     routeTypesGrouped = this.props.routeTypesGrouped;
     map = null;
 
     constructor(props) {
         super(props);
+
+        // GeoJSON layer of selected routes
         this.routesGeojson = this.props.storage.hasOwnProperty("routesGeoJson") ? JSON.parse(this.props.storage.routesGeoJson) : {
             "type": "FeatureCollection",
             "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
@@ -19,20 +22,22 @@ export class RoutePicker extends Component {
         };
 
 
-
         this.state = {
+            // If the "Select all" checkbox was checked, the corresponding transport type will be true
             isCheckAll: (this.props.storage.hasOwnProperty("isCheckAll")) ? JSON.parse(this.props.storage.isCheckAll) : {
                 "tram": false,
                 "metro": false,
                 "bus": false,
                 "funicular": false
             },
+            // The route name that were selected
             isCheck: (this.props.storage.hasOwnProperty("isCheck")) ? JSON.parse(this.props.storage.isCheck) : {
                 "tram": [],
                 "metro": [],
                 "bus": [],
                 "funicular": []
             },
+            // Maximally one accordion is always expanded, the transport type of the corresponding expanded accordion will be true
             isExpanded: {
                 "tram": false,
                 "metro": false,
@@ -43,6 +48,7 @@ export class RoutePicker extends Component {
     }
 
     componentDidUpdate(){
+        // Updating the routes GeoJSON layer, checked routes and which groups have all the routes selected
         this.props.storage.setItem("routesGeoJson", JSON.stringify(this.routesGeojson))
         this.props.storage.setItem("isCheck", JSON.stringify(this.state.isCheck))
         this.props.storage.setItem("isCheckAll", JSON.stringify(this.state.isCheckAll))
@@ -69,21 +75,21 @@ export class RoutePicker extends Component {
         });
     }
 
-    handleClick(routeName, routeType){
+    handleClickOnCheckbox(routeName, routeType){
         this.setState((state) => {
             let newIsCheck = { ...this.state.isCheck };
             let newIsCheckAll = { ...this.state.isCheckAll };
 
+            // The checkbox corresponding to routeName was either clicked or unclicked
             if (!state.isCheck[routeType].includes(routeName)) {
-                // click
+                // Checkbox clicked
                 newIsCheck[routeType] = [...newIsCheck[routeType], routeName];
-                // if last route in route group was clicked
                 if (newIsCheck[routeType].length === this.routeTypesGrouped[routeType].length) {
                     newIsCheckAll[routeType] = true;
                 }
 
             } else {
-                // unclick
+                // Checkbox unclicked
                 newIsCheck[routeType] = [...newIsCheck[routeType].filter(route => route !== routeName)];
                 newIsCheckAll[routeType] = false;
             }
@@ -97,7 +103,7 @@ export class RoutePicker extends Component {
         });
     }
 
-    handleExpand(routeType) {
+    handleAccordionExpand(routeType) {
         this.setState((state) => {
             let newIsExpanded = {...state.isExpanded};
 
@@ -137,6 +143,7 @@ export class RoutePicker extends Component {
     }
 
     render() {
+        // zeroRoutesChosen validates if at least one route was chosen, so that the "Next" button may be activated
         let zeroRoutesChosen = [].concat.apply([], Object.values(this.state.isCheck)).length === 0
 
         return (
@@ -148,7 +155,7 @@ export class RoutePicker extends Component {
                         <div>
                             {
                                 Object.keys(this.routeTypesGrouped).map((routeTypeName) => (
-                                    <Accordion className="route-picker_accordion" key={ routeTypeName } onChange={() => this.handleExpand(routeTypeName)} expanded={this.state.isExpanded[routeTypeName]}>
+                                    <Accordion className="route-picker_accordion" key={ routeTypeName } onChange={() => this.handleAccordionExpand(routeTypeName)} expanded={this.state.isExpanded[routeTypeName]}>
                                         <AccordionSummary
                                             expandIcon={<ExpandMoreIcon />}
                                             aria-controls="panel1a-content"
@@ -167,7 +174,7 @@ export class RoutePicker extends Component {
                                                 {
                                                     Object.values(this.routeTypesGrouped[routeTypeName]).map((route) => (
                                                         <div className="route-picker_accordion_expanded_checkboxes" key={ routeTypeName + ' ' + route }>
-                                                            {route} <Checkbox onChange={() => this.handleClick(route, routeTypeName)} checked={this.state.isCheck[routeTypeName].includes(route)} />
+                                                            {route} <Checkbox onChange={() => this.handleClickOnCheckbox(route, routeTypeName)} checked={this.state.isCheck[routeTypeName].includes(route)} />
                                                         </div>
                                                     ))
                                                 }

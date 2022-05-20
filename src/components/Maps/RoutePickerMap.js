@@ -8,6 +8,7 @@ export class RoutePickerMap extends Component {
     routesGeoJsonLayer = null;
 
     componentDidMount() {
+        // The map component initialization
         this.map = L.map("map", {
             center: this.props.centerCoords,
             zoom: 13,
@@ -23,6 +24,7 @@ export class RoutePickerMap extends Component {
             preferCanvas: true
         });
 
+        // Loading the selected routes' GeoJSON data, if they were selected and there was, for example, a refresh of the page
         if (this.props.routesGeojson !== null) {
             this.routesGeoJsonLayer = new L.GeoJSON(this.props.routesGeojson, {
                 style: function(feature) {
@@ -32,7 +34,7 @@ export class RoutePickerMap extends Component {
             this.routesGeoJsonLayer.addTo(this.map)
         }
     }
-
+    // Updating the routes' linestring GeoJSON layer in the map
     componentDidUpdate(prevProps, prevState, snapshot) {
         this.routesGeoJsonLayer.remove()
         if (this.props.routesGeojson !== null) {

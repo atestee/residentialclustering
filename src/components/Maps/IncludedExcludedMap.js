@@ -8,15 +8,16 @@ import "leaflet/dist/leaflet.css";
 import {MyComponent} from "./MyComponent";
 import L from "leaflet";
 
-import {
-    FOCUSED_COLOR_BUILDINGS
-} from "../Visualization/HighLevelViz/HighLevelViz";
+import {FOCUSED_COLOR_BUILDINGS} from "../Visualization/HighLevelViz/HighLevelViz";
 
-
+// The included / excluded map shown in the detailed visualization page
 export class IncludedExcludedMap extends Component {
+    // bounds and center of the cluster polygon, used for centering and zooming the map to display the cluster
+    // in the center and big enough to fit in the map
     bounds = this.props.clusterPolygon["features"][0]["properties"]["bounds"]
     center = this.props.clusterPolygon["features"][0]["properties"]["center"]
 
+    // the corresponding route linestring in the geojson format
     routeGeojson = {
         "type": "FeatureCollection",
         "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
@@ -31,6 +32,7 @@ export class IncludedExcludedMap extends Component {
         ]
     };
 
+    // defines the marker style for included res. buildings
     includedResidentialBuildingsStyle = {
         radius: 2,
         fillColor: FOCUSED_COLOR_BUILDINGS,
@@ -39,6 +41,7 @@ export class IncludedExcludedMap extends Component {
         fillOpacity : 1
     }
 
+    // defines the marker style for excluded res. buildings
     excludedResidentialBuildingsStyle = {
         radius: 2,
         fillColor: "grey",
@@ -55,11 +58,13 @@ export class IncludedExcludedMap extends Component {
     }
 
     render() {
-        let busIcon = L.icon({
+        // the blue square icon representing public transport stops on the map
+        let stopIcon = L.icon({
             iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Solid_blue.svg/1024px-Solid_blue.svg.png',
             iconSize: [15, 15],
         });
         return (
+            // The map component
             <MapContainer id="map"
                           bounds={[this.bounds["southWest"], this.bounds["northEast"]]}
                           boundsOptions={{ maxZoom: 18 }}
@@ -67,6 +72,7 @@ export class IncludedExcludedMap extends Component {
                           zoomSnap={0.2}
                           zoomDelta={1}
                           zoomControl={false}>
+                {/* This component takes care of refreshing the map center when the "details" tab is opened */}
                 <MyComponent />
                 <TileLayer
                     attribution='Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
@@ -77,6 +83,7 @@ export class IncludedExcludedMap extends Component {
                     id='toner-lite'
                 />
                 <ZoomControl position="bottomleft" />
+                {/* The control with radio buttons for switching between the heat map and the included / excluded map */}
                 <Control position='topleft'>
                     <div className="map-control">
                         <FormControl>
@@ -89,6 +96,7 @@ export class IncludedExcludedMap extends Component {
                         </FormControl>
                     </div>
                 </Control>
+                {/* The legend component in the top-right corner of the map */}
                 <Control position="topright">
                     <div className="map-control">
                         <div className="map-legend__row" key={"legend-row-included"}>
@@ -101,25 +109,30 @@ export class IncludedExcludedMap extends Component {
                         </div>
                     </div>
                 </Control>
+                {/* The route layer shown in the map */}
                 <GeoJSON data={this.routeGeojson} style={
                     function(feature) {
                         return {color: feature.properties.color}
                     }
                 }/>
+                {/* The cluster polygon layer shown in the map*/}
                 <GeoJSON data={ this.props.clusterPolygon }/>
+                {/* The included residential buildings layer shown in the map */}
                 <GeoJSON data={ this.props.includedResidentialBuildings }
                          pointToLayer={ function (feature, latlng) {
                              return L.circleMarker(latlng, this.includedResidentialBuildingsStyle);
                          }.bind(this)}
                 />
+                {/* The excluded residential buildings layer shown in the map */}
                 <GeoJSON data={ this.props.excludedResidentialBuildings }
                          pointToLayer={ function (feature, latlng) {
                              return L.circleMarker(latlng, this.excludedResidentialBuildingsStyle);
                          }.bind(this)}
                 />
                 {
+                    // When a stop is hovered over, a tooltip with its name is shown
                     this.props.feedingTransitStops.map((stop) => (
-                        <Marker key={stop.name} icon={busIcon} position={[stop.latitude, stop.longitude]}>
+                        <Marker key={stop.name} icon={stopIcon} position={[stop.latitude, stop.longitude]}>
                             <Tooltip direction="top">
                                 {stop.name}
                             </Tooltip>

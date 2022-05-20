@@ -17,7 +17,7 @@ import {
     DialogTitle, IconButton,
     TablePagination
 } from "@mui/material";
-import {HeaderWithNewJob} from "../Headers/HeaderWithNewJob";
+import {HeaderForJobOverview} from "../Headers/HeaderForJobOverview";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 // component for the Job Overview Page (also the main page)
@@ -81,12 +81,12 @@ export class JobOverview extends Component {
     }
 
     render() {
-        // if the job information data was already loaded show the page, else show circular progress
+        // if the job information data was already loaded, show the page, else show a circular progress
         if (this.state.jobInformation) {
             return (
                 <div>
                     {/* Header component for this page */}
-                    <HeaderWithNewJob next="/new-job/1"/>
+                    <HeaderForJobOverview next="/new-job/1"/>
                     <div className="job-management__body">
                         {/* Job Information Table */}
                         <div className="job-management__body__table">

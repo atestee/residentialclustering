@@ -16,7 +16,7 @@ function getColorGradientArray(numberOfBins, startColor, middleColor, endColor) 
     return arr1.concat(arr2);
 }
 
-
+// The detailed visualization page implementation
 export class DetailedViz extends Component {
     nbins = JSON.parse(this.props.storage.getItem("nbins"))
     colorGradientArray = getColorGradientArray(this.nbins, "#00ff1a", "#ffd500", "#ff0000");
@@ -25,7 +25,7 @@ export class DetailedViz extends Component {
 
     clusterIdx = this.props.storage.getItem("clusterIdx")
     clusterData = JSON.parse(this.props.storage.getItem("clusterData"))
-    parameters = JSON.parse(this.props.storage.getItem("parameters"))
+    jobParameters = JSON.parse(this.props.storage.getItem("parameters"))
     clusterName = this.clusterData.geography.features[0].properties.name
     productiveAgeDistribution = this.clusterData["demographicData"].filter((item) => (item.name === "productivityDistribution"))[0]
 
@@ -41,8 +41,10 @@ export class DetailedViz extends Component {
             metricsDrawerOpen: false,
             focusedDistanceGroupIndex: null,
         }
+
+        // Creating the taxi ride duration histogram
         this.taxiRideDurationHist = this.clusterData.histograms["taxiRideDurationMinutes"];
-        let delta = (this.parameters.maxTaxiRideDurationMinutes / this.nbins);
+        let delta = (this.jobParameters.maxTaxiRideDurationMinutes / this.nbins);
         this.taxiRideDurationHistData = this.taxiRideDurationHist.map((elem, index) => {
             const start = (index * delta);
             const end = (index + 1) * delta;
@@ -50,24 +52,23 @@ export class DetailedViz extends Component {
             const start_secs = (start - start_min) * 60;
             const end_min = Math.floor(end);
             const end_secs = (end - end_min) * 60;
-
             const start_str = start_min.toLocaleString("en-US", {minimumIntegerDigits: 2}) + ":" + Number(start_secs.toFixed(0)).toLocaleString("en-US", {minimumIntegerDigits: 2})
             const end_str = end_min.toLocaleString("en-US", {minimumIntegerDigits: 2}) + ":" + Number(end_secs.toFixed(0)).toLocaleString("en-US", {minimumIntegerDigits: 2})
-
             return ({
                 "value": elem,
                 "key": start_str + " - " + end_str
             })
         })
 
+        // Creating the taxi ride distance histogram
         this.taxiRideDistanceHist = this.clusterData.histograms["taxiRideDistanceMeters"];
-        delta = this.parameters.maxDrivingDistanceMeters / this.nbins;
-
+        delta = this.jobParameters.maxDrivingDistanceMeters / this.nbins;
         this.taxiRideDistanceHistData = this.taxiRideDistanceHist.map((elem, index) => ({
             "value": elem,
             "key": String((index * delta / 1000).toFixed(1)) + " - " + String(((index + 1) * delta / 1000).toFixed(1))
         }))
 
+        // The geometry and color data for visualizing the route corresponding to the visualized cluster
         this.routeLinestring = {
             "geometry": this.clusterData["routeGeometry"],
             "color": getRouteColor(this.clusterData["routeType"], this.clusterData["routeName"])
@@ -83,7 +84,7 @@ export class DetailedViz extends Component {
                         clusterPolygon={this.clusterData.geography}
                         includedResidentialBuildings={this.clusterData.includedResidentialBuildings}
                         feedingTransitStops={this.clusterData.feedingTransitStops}
-                        jobParameters={this.parameters}
+                        jobParameters={this.jobParameters}
                         colorGradientArray={this.colorGradientArray}
                         colorGradientArrayFaded={this.colorGradientArrayFaded}
                         legendValuesArray={Object.values(this.taxiRideDistanceHistData.map((elem) => (elem.key)))}
@@ -109,6 +110,7 @@ export class DetailedViz extends Component {
         }
     }
 
+    // Distance group = residential buildings that are in the same "bin" of the taxi ride distance histogram
     putFocusOnDistanceGroup(index) {
         this.setState(() => ({
             focusedDistanceGroupIndex: index,
@@ -121,6 +123,7 @@ export class DetailedViz extends Component {
         }))
     }
 
+    // Set if shown map is heatmap or included / excluded map
     setShownMap(event) {
         this.setState(() => ({
             shownMap: event.target.value
