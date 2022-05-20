@@ -11,7 +11,7 @@ export class HeaderForHighLevelVisualization extends Component {
         return (
             <div className="header-component">
                 <div className="header-component_header">
-                    <h2>Residential clustering ({this.props.jobName})</h2>
+                    <h2>High-level visualization ({this.props.jobName})</h2>
                 </div>
                 <div className="header-component_buttons">
                     <Button component={RouterLink} to={this.props.back} className="header-component_buttons_back-button" variant="outlined">Back</Button>
