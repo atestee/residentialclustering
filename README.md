@@ -1,6 +1,6 @@
-# Optimal residential clusters quantification and visualization web application
+# Quantification and visualization of residential clusters
 
-Description: An interactive web application for creating clustering analysis jobs and visualizing the results in a map. This application was the assignment of my bachelor thesis and the idea came from the company Mileus, which had an API for running the clustering analysis itself. 
+Description: An interactive web application for collecting parameters for clustering analysis and visualizing the results in a map. This application was the assignment of my bachelor thesis and the idea came from the company Mileus. The application uses Mileus analytical API.
 
 Technology used:
 
@@ -15,8 +15,7 @@ Technology used:
 
 # Screenshots
 
-![CityPicker](images/CityPicker.gif)
-![CenterPicker](images/CenterPicker.gif)
+![CityAndCenterPicker](images/CityAndCenterPicker.gif)
 ![RoutePicker](images/RoutePicker.gif)
 ![ParamsForm](images/ParamsForm.gif)
 ![HighLevelViz](images/HighLevelViz.gif)
