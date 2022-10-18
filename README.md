@@ -12,3 +12,23 @@ Technology used:
     • Flask – for the rest api
     • Python libraries: numpy, pandas, shapely and gtfsk
     • MongoDB
+
+# Screenshots
+
+![CityPicker](images/CityPicker.gif)
+![CenterPicker](images/CenterPicker.gif)
+![RoutePicker](images/RoutePicker.gif)
+![ParamsForm](images/ParamsForm.gif)
+![HighLevelViz](images/HighLevelViz.gif)
+![DetailedViz](images/DetailedViz.gif)
+
+
+# Install manual
+This application is tested on the 16.14.0 version of Node.js
+
+1. Install node.js https://nodejs.org/en/download/
+2. Install the node packages `npm install`
+3. Run the application `npm run`
+
+# Rest API 
+The Rest API for this application is located here: https://github.com/atestee/residentialclustering-server
